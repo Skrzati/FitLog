@@ -1,1 +1,19 @@
-/* You can add global styles to this file, and also import other style files */
+/* Reset domyślnych marginesów przeglądarki */
+body, html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  box-sizing: border-box;
+}
+
+/* Ustawienie domyślnego tła i czcionki dla całej aplikacji */
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #1e272e; /* Ten sam kolor co w Twoim $dark-bg */
+  color: #f1f2f6;
+}
+
+/* Globalne ustawienie box-sizing dla wszystkich elementów */
+*, *::before, *::after {
+  box-sizing: inherit;
+}

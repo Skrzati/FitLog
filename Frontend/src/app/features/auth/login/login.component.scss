@@ -1,0 +1,113 @@
+@use 'sass:color'; // WAŻNE: To musi być na samej górze
+
+// Zmienne
+$primary: #ff4757;
+$dark-bg: #1e272e;
+$card-bg: #2f3640;
+$text-light: #f1f2f6;
+$text-muted: #a4b0be;
+$error-color: #ff6b6b;
+
+.auth-container {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: $dark-bg;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.auth-card {
+  background: $card-bg;
+  padding: 2.5rem;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+  color: $text-light;
+
+  .header {
+    text-align: center;
+    margin-bottom: 2rem;
+    h2 { margin: 0; font-size: 1.8rem; }
+    p { color: $text-muted; margin-top: 0.5rem; }
+  }
+}
+
+.form-group {
+  margin-bottom: 1.2rem;
+  display: flex;
+  flex-direction: column;
+
+  label {
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+    color: $text-muted;
+  }
+
+  input {
+    padding: 0.8rem;
+    border-radius: 8px;
+    // ZMIANA: color.scale zamiast lighten
+    border: 1px solid color.scale($card-bg, $lightness: 10%);
+    background: color.scale($card-bg, $lightness: 5%);
+    color: white;
+    outline: none;
+    transition: all 0.3s;
+
+    &:focus {
+      border-color: $primary;
+      box-shadow: 0 0 0 2px rgba($primary, 0.2);
+    }
+    
+    &.invalid {
+      border-color: $error-color;
+    }
+  }
+
+  .error {
+    color: $error-color;
+    font-size: 0.8rem;
+    margin-top: 0.3rem;
+  }
+}
+
+.alert-error {
+  background: rgba($error-color, 0.1);
+  color: $error-color;
+  padding: 0.8rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  text-align: center;
+  font-size: 0.9rem;
+  border: 1px solid rgba($error-color, 0.3);
+}
+
+button {
+  width: 100%;
+  padding: 1rem;
+  background: $primary;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.3s;
+  margin-top: 0.5rem;
+
+  // ZMIANA: color.scale zamiast darken (wartość ujemna przyciemnia)
+  &:hover { background: color.scale($primary, $lightness: -10%); }
+  &:disabled { background: gray; cursor: not-allowed; }
+}
+
+.footer {
+  margin-top: 1.5rem;
+  text-align: center;
+  font-size: 0.9rem;
+  a {
+    color: $primary;
+    text-decoration: none;
+    &:hover { text-decoration: underline; }
+  }
+}
