@@ -25,12 +25,14 @@ public class UserController {
     }
 
     @PostMapping("/Login")
-    public String login(@RequestBody User user) {
-        userService.getUserByEmail(user.getEmail());
-
-
-
-        return "Email Pasuje";
+    public ResponseEntity<?> login(@RequestBody User user) {
+        User loginAccept = userService.userData(user);
+        if (loginAccept != null) {
+            return ResponseEntity.ok(loginAccept);
+        }
+        else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Błędny login lub hasło");
+        }
     }
     @PostMapping("/Register")
     public ResponseEntity<?> register(@RequestBody User user) {
