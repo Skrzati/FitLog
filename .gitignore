@@ -1,24 +1,72 @@
-# Compiled class file
+### Pliki skompilowane (Java) ###
 *.class
 
-# Log file
-*.log
-
-# BlueJ files
-*.ctxt
-
-# Mobile Tools for Java (J2ME)
-.mtj.tmp/
-
-# Package Files #
+### Spakowane pliki wykonywalne ###
+# Zazwyczaj nie wrzucamy ich do repo, chyba że to release
 *.jar
 *.war
-*.nar
 *.ear
-*.zip
-*.tar.gz
-*.rar
+*.nar
 
-# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
-hs_err_pid*
-replay_pid*
+### Logi ###
+*.log
+
+### Maven (narzędzie budowania) ###
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+
+### Gradle (narzędzie budowania) ###
+.gradle/
+build/
+!gradle/wrapper/gradle-wrapper.jar
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+### IntelliJ IDEA (Środowisko) ###
+.idea/
+*.iws
+*.iml
+*.ipr
+out/
+
+### Eclipse (Środowisko) ###
+.classpath
+.project
+.settings/
+bin/
+
+### Visual Studio Code ###
+.vscode/
+
+### Pliki systemowe (Mac/Windows) ###
+.DS_Store
+Thumbs.db
+
+####################################
+### FRONTEND (Angular / Node.js) ###
+####################################
+
+# Zależności (biblioteki) - TO JEST NAJWAŻNIEJSZE
+node_modules/
+
+# Cache Angular CLI
+.angular/
+
+# Wynik budowania aplikacji (produkcyjny kod JS/HTML)
+dist/
+
+# Pliki tymczasowe i logi błędów NPM/Yarn
+npm-debug.log
+yarn-error.log
+test-report.xml
+
+# Pokrycie kodu testami
+coverage/
+
+# Prywatne pliki środowiskowe (jeśli będziesz ich używać)
+.env
