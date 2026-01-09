@@ -46,3 +46,27 @@ bin/
 ### Pliki systemowe (Mac/Windows) ###
 .DS_Store
 Thumbs.db
+
+####################################
+### FRONTEND (Angular / Node.js) ###
+####################################
+
+# Zależności (biblioteki) - TO JEST NAJWAŻNIEJSZE
+node_modules/
+
+# Cache Angular CLI
+.angular/
+
+# Wynik budowania aplikacji (produkcyjny kod JS/HTML)
+dist/
+
+# Pliki tymczasowe i logi błędów NPM/Yarn
+npm-debug.log
+yarn-error.log
+test-report.xml
+
+# Pokrycie kodu testami
+coverage/
+
+# Prywatne pliki środowiskowe (jeśli będziesz ich używać)
+.env
