@@ -2,8 +2,8 @@ import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { AuthService } from '../../../core/auth/auth.service';
-import { User } from '../../../core/models/auth.model';
+import { AuthService } from '../../core/auth/auth.service';
+import { User } from '../../core/models/auth.model';
 
 @Component({
   selector: 'app-login',
@@ -17,9 +17,9 @@ export class LoginComponent {
   private router = inject(Router);
   private fb = inject(FormBuilder);
 
-  // Formularz zbiera email i hasło
+  // Zmieniliśmy nazwę pola z 'email' na 'identifier', bo może to być nick
   loginForm = this.fb.nonNullable.group({
-    email: ['', [Validators.required, Validators.email]],
+    identifier: ['', Validators.required], 
     password: ['', [Validators.required, Validators.minLength(6)]]
   });
 
@@ -28,28 +28,31 @@ export class LoginComponent {
   onSubmit() {
     if (this.loginForm.valid) {
       this.errorMessage = '';
-      
-      // Pobieramy dane z formularza
       const formValues = this.loginForm.getRawValue();
+      
+      // --- MAGIA LOGOWANIA ---
+      // Sprawdzamy czy wpisano email (czy zawiera @)
+      const isEmail = formValues.identifier.includes('@');
 
-      // Rzutujemy na typ User, aby pasował do metody login()
+      // Tworzymy obiekt User dynamicznie
       const userPayload: User = {
-        email: formValues.email,
-        password: formValues.password
+        password: formValues.password,
+        // Jeśli ma @ to wysyłamy jako email, jeśli nie to jako username
+        email: isEmail ? formValues.identifier : undefined,
+        username: !isEmail ? formValues.identifier : undefined
       };
 
       this.authService.login(userPayload).subscribe({
         next: (user) => {
-          console.log('Zalogowano pomyślnie:', user);
+          console.log('Zalogowano:', user);
           this.router.navigate(['/dashboard']); 
         },
         error: (err) => {
           console.error('Błąd logowania:', err);
-          // Jeśli backend zwróci tekst "Błędny login lub hasło", wyświetlimy go
-          if (typeof err.error === 'string') {
+          if (err.error && typeof err.error === 'string') {
             this.errorMessage = err.error; 
           } else {
-            this.errorMessage = 'Wystąpił błąd połączenia z serwerem.';
+            this.errorMessage = 'Błędny login lub hasło.';
           }
         }
       });

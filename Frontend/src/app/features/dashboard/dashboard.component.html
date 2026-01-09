@@ -1,0 +1,51 @@
+<div class="dashboard-container">
+  <aside class="sidebar">
+    <div class="logo">FitLog</div>
+    <nav>
+      <a class="active">Pulpit</a>
+      <a>Treningi</a>
+      <a>Dieta</a>
+      <a routerLink="/settings">Ustawienia</a>
+      <a (click)="logout()">Wyloguj</a>
+    </nav>
+  </aside>
+
+  <main class="content">
+    
+    @if (userProfile(); as user) {
+      <header>
+        <h1>Cześć, 
+          <span class="highlight">
+            @if (settingsService.showUsername()) {
+              {{ user.username }}
+            } @else {
+              {{ user.firstName }}
+            }
+          </span>! 👋
+        </h1>
+        
+        @if (user.email) {
+          <p>Zalogowano jako: {{ user.email }}</p>
+        }
+      </header>
+
+      <div class="stats-grid">
+        <div class="card">
+          <h3>Twoja rola</h3>
+          <p>UŻYTKOWNIK</p>
+        </div>
+        <div class="card">
+          <h3>Ostatnia aktywność</h3>
+          <p>Dzisiaj</p>
+        </div>
+      </div>
+
+    } @else {
+      <div class="loading">
+        <h2>Ładowanie...</h2>
+        <p>Pobieranie danych z serwera...</p>
+      </div>
+    }
+
+  </main>
+</div>

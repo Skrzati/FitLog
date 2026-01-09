@@ -3,11 +3,10 @@ package pl.mateuszj.fitlog.services;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import pl.mateuszj.fitlog.models.Role;
 import pl.mateuszj.fitlog.models.User;
+import pl.mateuszj.fitlog.models.dto.UserResponse;
 import pl.mateuszj.fitlog.repository.UserRepository;
-
-import java.util.List;
-import java.util.Optional;
 
 
 @Service
@@ -21,6 +20,12 @@ public class UserService {
     }
 
     public User addUser(User user) {
+        if (userRepository.findByUsername(user.getUsername()).isPresent()) {
+            return null;
+        } else if (userRepository.findByEmail(user.getEmail()).isPresent()) {
+            return null;
+        }
+        user.setRole(Role.USER);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
     }
@@ -48,18 +53,22 @@ public class UserService {
             }
 
         }
-
-
         return null;
     }
-
-
-
-
-
-    public List<User> getAllStudent(User user) {
-        return userRepository.findAll();
+    public UserResponse getUserById(long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Nie znaleziono użytkownika"));
+        UserResponse response = new UserResponse(
+                user.getId(),
+                user.getFirstName(),
+                user.getUsername()
+        );
+        return response;
     }
+
+
+
+
 
 
 }

@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.mateuszj.fitlog.models.User;
+import pl.mateuszj.fitlog.models.dto.UserResponse;
 import pl.mateuszj.fitlog.services.UserService;
 
 import java.util.List;
@@ -36,12 +37,21 @@ public class UserController {
     }
     @PostMapping("/Register")
     public ResponseEntity<?> register(@RequestBody User user) {
-
         User created = userService.addUser(user);
-        return new ResponseEntity<>(created, HttpStatus.CREATED);
+        if (created != null) {
+            return new ResponseEntity<>(created, HttpStatus.CREATED);
+        }
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
-    @GetMapping("/Users")
-    public List<User> blank(User user) {
-        return userService.getAllStudent(user);
+    @GetMapping("/User/{id}")
+    public ResponseEntity<?> name(@PathVariable Long id) {
+        UserResponse name = userService.getUserById(id);
+        if (name != null) {
+            System.out.println(name);
+            return ResponseEntity.ok(name);
+        }
+        else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Błędny login lub hasło");
+        }
     }
 }

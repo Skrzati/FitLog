@@ -8,30 +8,27 @@
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
       
       <div class="form-group">
-        <label for="email">Email</label>
+        <label>Email lub Nazwa użytkownika</label>
+        
         <input 
-          id="email" 
-          type="email" 
-          formControlName="email" 
-          placeholder="twoj@email.com"
-          [class.invalid]="loginForm.controls.email.invalid && loginForm.controls.email.touched"
+          type="text" 
+          formControlName="identifier" 
+          placeholder="Wpisz email lub nick"
+          [class.invalid]="loginForm.get('identifier')?.invalid && loginForm.get('identifier')?.touched"
         >
-        @if (loginForm.controls.email.invalid && loginForm.controls.email.touched) {
-          <small class="error">Podaj poprawny email</small>
+        @if (loginForm.get('identifier')?.invalid && loginForm.get('identifier')?.touched) {
+          <small class="error">To pole jest wymagane</small>
         }
       </div>
 
       <div class="form-group">
-        <label for="password">Hasło</label>
+        <label>Hasło</label>
         <input 
-          id="password" 
           type="password" 
-          formControlName="password"
-          placeholder="******"
+          formControlName="password" 
+          placeholder="Twoje hasło"
+          [class.invalid]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched"
         >
-        @if (loginForm.controls.password.invalid && loginForm.controls.password.touched) {
-          <small class="error">Hasło jest wymagane</small>
-        }
       </div>
 
       @if (errorMessage) {

@@ -1,19 +1,39 @@
-/* Reset domyślnych marginesów przeglądarki */
-body, html {
-  margin: 0;
-  padding: 0;
-  height: 100%;
-  box-sizing: border-box;
+/* Definicja kolorów (Zmienne CSS) */
+:root {
+  /* Domyślny motyw (CIEMNY) - Twoje obecne kolory */
+  --bg-color: #1e272e;
+  --card-bg: #2f3640;
+  --text-color: #f1f2f6;
+  --text-muted: #a4b0be;
+  --primary-color: #ff4757;
+  --border-color: rgba(255, 255, 255, 0.1);
 }
 
-/* Ustawienie domyślnego tła i czcionki dla całej aplikacji */
+/* Motyw JASNY (Light Mode) - nadpisujemy zmienne */
+.light-theme {
+  --bg-color: #f1f2f6;       /* Jasne tło */
+  --card-bg: #ffffff;        /* Białe karty */
+  --text-color: #2f3640;     /* Ciemny tekst */
+  --text-muted: #747d8c;
+  --border-color: rgba(0, 0, 0, 0.1);
+  /* --primary-color zostaje ten sam, bo pasuje do obu */
+}
+
+/* Reset i style globalne */
 body {
+  margin: 0;
   font-family: 'Segoe UI', sans-serif;
-  background-color: #1e272e; /* Ten sam kolor co w Twoim $dark-bg */
-  color: #f1f2f6;
+  
+  /* Używamy zmiennych zamiast sztywnych kolorów */
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  
+  transition: background-color 0.3s, color 0.3s; /* Płynne przejście */
 }
 
-/* Globalne ustawienie box-sizing dla wszystkich elementów */
-*, *::before, *::after {
-  box-sizing: inherit;
+/* Dostosowanie inputów, żeby pasowały do obu motywów */
+input {
+  background: var(--bg-color) !important;
+  color: var(--text-color) !important;
+  border: 1px solid var(--border-color) !important;
 }

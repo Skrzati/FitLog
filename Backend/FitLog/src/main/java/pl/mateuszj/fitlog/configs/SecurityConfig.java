@@ -28,6 +28,7 @@ public class SecurityConfig {
                         authorizationManagerRequestMatcherRegistry ->  authorizationManagerRequestMatcherRegistry
                                 .requestMatchers("/Login").permitAll()
                                 .requestMatchers("/Register").permitAll()
+                                .requestMatchers("/User/**").permitAll()
                                 .anyRequest().authenticated()
                 )
                 .headers(headers -> headers.frameOptions(f -> f.sameOrigin()))

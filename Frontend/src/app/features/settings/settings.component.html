@@ -1,0 +1,23 @@
+<div class="settings-container">
+  <h2>Ustawienia Aplikacji ⚙️</h2>
+
+  <div class="setting-item">
+    <div class="info">
+      <h3>Motyw</h3>
+      <p>Wybierz wygląd aplikacji</p>
+    </div>
+    <button (click)="settingsService.toggleTheme()" [class.active]="settingsService.isDarkMode()">
+      {{ settingsService.isDarkMode() ? '🌙 Ciemny' : '☀️ Jasny' }}
+    </button>
+  </div>
+
+  <div class="setting-item">
+    <div class="info">
+      <h3>Powitanie</h3>
+      <p>Jak mamy się do Ciebie zwracać?</p>
+    </div>
+    <button (click)="settingsService.toggleGreeting()" [class.active]="settingsService.showUsername()">
+      {{ settingsService.showUsername() ? '👤 Nick' : '📛 Imię' }}
+    </button>
+  </div>
+</div>

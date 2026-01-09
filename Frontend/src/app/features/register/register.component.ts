@@ -2,8 +2,8 @@ import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AbstractControl, FormBuilder, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { AuthService } from '../../../core/auth/auth.service';
-import { User } from '../../../core/models/auth.model';
+import { AuthService } from '../../core/auth/auth.service';
+import { User } from '../../core/models/auth.model';
 
 @Component({
   selector: 'app-register',
@@ -18,8 +18,10 @@ export class RegisterComponent {
   private router = inject(Router);
 
   registerForm = this.fb.group({
-    firstName: ['', Validators.required], // Ważne: nazwa pola zgodna z Java
-    lastName: ['', Validators.required],  // Ważne: nazwa pola zgodna z Java
+    firstName: ['', Validators.required],
+    lastName: ['', Validators.required],
+    // Tutaj dodajemy Username, żeby trafił do bazy
+    username: ['', Validators.required],
     email: ['', [Validators.required, Validators.email]],
     password: ['', [Validators.required, Validators.minLength(6)]],
     confirmPassword: ['', Validators.required]
@@ -29,20 +31,25 @@ export class RegisterComponent {
 
   onSubmit() {
     if (this.registerForm.valid) {
-      // Pobieramy dane i oddzielamy confirmPassword (nie wysyłamy go do backendu)
+      // Wyciągamy dane bez confirmPassword
       const { confirmPassword, ...userData } = this.registerForm.getRawValue();
       
-      // Rzutujemy na User
+      // Rzutujemy na obiekt User
       const newUser: User = userData as User;
 
       this.authService.register(newUser).subscribe({
-        next: (user) => {
-          console.log('Zarejestrowano:', user);
-          this.router.navigate(['/dashboard']);
+        next: () => {
+          // Po sukcesie idziemy do logowania
+          this.router.navigate(['/login']);
         },
         error: (err) => {
           console.error(err);
-          this.errorMessage = 'Błąd rejestracji. Sprawdź czy email nie jest już zajęty.';
+          // Obsługa błędu (np. zajęty login)
+          if (err.error && typeof err.error === 'string') {
+            this.errorMessage = err.error;
+          } else {
+            this.errorMessage = 'Błąd rejestracji. Taki email lub nick może już istnieć.';
+          }
         }
       });
     } else {
@@ -50,7 +57,6 @@ export class RegisterComponent {
     }
   }
 
-  // Walidator sprawdzający czy hasła są takie same
   passwordMatchValidator(control: AbstractControl): ValidationErrors | null {
     const password = control.get('password')?.value;
     const confirm = control.get('confirmPassword')?.value;
