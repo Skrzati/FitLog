@@ -1,39 +1,97 @@
-/* Definicja kolorów (Zmienne CSS) */
+/* Importujemy nowoczesną czcionkę "Inter" */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap');
+
 :root {
-  /* Domyślny motyw (CIEMNY) - Twoje obecne kolory */
-  --bg-color: #1e272e;
-  --card-bg: #2f3640;
-  --text-color: #f1f2f6;
-  --text-muted: #a4b0be;
-  --primary-color: #ff4757;
-  --border-color: rgba(255, 255, 255, 0.1);
+  /* Paleta kolorów - Nowoczesny Dark Mode */
+  --bg-color: #0f1115;          /* Prawie czarny, głęboki granat */
+  --card-bg: #181b21;           /* Trochę jaśniejszy */
+  --primary-color: #e84118;     /* Energetyczny pomarańcz/czerwień */
+  --accent-color: #00a8ff;      /* Niebieski akcent */
+  --text-color: #f5f6fa;
+  --text-muted: #7f8fa6;
+  --border-color: rgba(255, 255, 255, 0.08);
+  
+  /* Gradient do przycisków/tekstów */
+  --gradient-primary: linear-gradient(135deg, #e84118 0%, #c23616 100%);
 }
 
-/* Motyw JASNY (Light Mode) - nadpisujemy zmienne */
+/* Styl dla jasnego motywu (opcjonalnie, jeśli przełączysz w ustawieniach) */
 .light-theme {
-  --bg-color: #f1f2f6;       /* Jasne tło */
-  --card-bg: #ffffff;        /* Białe karty */
-  --text-color: #2f3640;     /* Ciemny tekst */
-  --text-muted: #747d8c;
+  --bg-color: #f5f6fa;
+  --card-bg: #ffffff;
+  --primary-color: #e84118;
+  --text-color: #2f3640;
+  --text-muted: #718093;
   --border-color: rgba(0, 0, 0, 0.1);
-  /* --primary-color zostaje ten sam, bo pasuje do obu */
 }
 
-/* Reset i style globalne */
 body {
   margin: 0;
-  font-family: 'Segoe UI', sans-serif;
-  
-  /* Używamy zmiennych zamiast sztywnych kolorów */
+  font-family: 'Inter', sans-serif; /* Nowa czcionka */
   background-color: var(--bg-color);
   color: var(--text-color);
-  
-  transition: background-color 0.3s, color 0.3s; /* Płynne przejście */
+  transition: background-color 0.3s, color 0.3s;
+  overflow-x: hidden; /* Żeby nic nie wystawało na boki */
 }
 
-/* Dostosowanie inputów, żeby pasowały do obu motywów */
+/* Nowoczesne Inputy */
 input {
-  background: var(--bg-color) !important;
-  color: var(--text-color) !important;
+  background: rgba(255, 255, 255, 0.05) !important;
   border: 1px solid var(--border-color) !important;
+  color: var(--text-color) !important;
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  width: 100%;
+  box-sizing: border-box;
+
+  &:focus {
+    border-color: var(--primary-color) !important;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(232, 65, 24, 0.2);
+  }
+}
+
+/* Nowoczesne Przyciski */
+button, .btn {
+  font-family: 'Inter', sans-serif;
+  padding: 12px 24px;
+  border-radius: 8px; /* Lekkie zaokrąglenie */
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: transform 0.2s, box-shadow 0.2s;
+  
+  &.btn-primary {
+    background: var(--gradient-primary);
+    color: white;
+    box-shadow: 0 4px 15px rgba(232, 65, 24, 0.3);
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(232, 65, 24, 0.4);
+    }
+  }
+
+  &.btn-outline {
+    background: transparent;
+    border: 2px solid var(--border-color);
+    color: var(--text-color);
+
+    &:hover {
+      border-color: var(--text-color);
+      background: rgba(255,255,255,0.05);
+    }
+  }
+}
+
+/* Linki */
+a {
+  color: var(--primary-color);
+  text-decoration: none;
+  font-weight: 600;
+  transition: opacity 0.2s;
+  &:hover { opacity: 0.8; }
 }

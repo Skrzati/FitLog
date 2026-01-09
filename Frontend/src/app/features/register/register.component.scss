@@ -1,101 +1,122 @@
-@use 'sass:color'; // WAŻNE: Na samej górze
-
-$primary: #ff4757;
-$dark-bg: #1e272e;
-$card-bg: #2f3640;
-$text-light: #f1f2f6;
-$text-muted: #a4b0be;
+/* Nowoczesny styl dla Auth (Login/Register) */
 
 .auth-container {
-  min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: $dark-bg;
-  font-family: 'Segoe UI', sans-serif;
+  min-height: 100vh;
+  /* Tło z delikatnym gradientem, żeby nie było płasko */
+  background: radial-gradient(circle at top right, rgba(232, 65, 24, 0.1), transparent 40%),
+              var(--bg-color);
+  padding: 1rem;
 }
 
 .auth-card {
-  background: $card-bg;
+  background: var(--card-bg);
   padding: 2.5rem;
   border-radius: 16px;
   width: 100%;
-  max-width: 450px;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-  color: $text-light;
+  max-width: 420px;
+  
+  /* Klucz do nowoczesnego wyglądu: subtelna ramka i cień */
+  border: 1px solid var(--border-color);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2); 
+  
+  /* Opcjonalnie: efekt szkła (jeśli przeglądarka wspiera) */
+  backdrop-filter: blur(10px); 
 
   .header {
     text-align: center;
     margin-bottom: 2rem;
-    h2 { margin: 0; font-size: 1.8rem; }
-    p { color: $text-muted; margin-top: 0.5rem; }
+
+    h2 {
+      margin: 0;
+      font-size: 1.8rem;
+      font-weight: 700;
+      background: var(--gradient-primary);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    p {
+      color: var(--text-muted);
+      margin-top: 0.5rem;
+    }
   }
 }
 
 .form-group {
-  margin-bottom: 1.2rem;
-  display: flex;
-  flex-direction: column;
+  margin-bottom: 1.5rem;
 
   label {
+    display: block;
     margin-bottom: 0.5rem;
+    color: var(--text-muted);
     font-size: 0.9rem;
-    color: $text-muted;
+    font-weight: 600;
   }
 
-  input {
-    padding: 0.8rem;
-    border-radius: 8px;
-    // ZMIANA
-    border: 1px solid color.scale($card-bg, $lightness: 10%);
-    background: color.scale($card-bg, $lightness: 5%);
-    color: white;
-    outline: none;
-    transition: all 0.3s;
-
-    &:focus {
-      border-color: $primary;
-      box-shadow: 0 0 0 2px rgba($primary, 0.2);
-    }
-  }
-
+  /* Inputy są stylowane globalnie w styles.scss, tu tylko detale */
   .error {
-    color: $primary;
+    color: var(--primary-color);
     font-size: 0.8rem;
-    margin-top: 0.3rem;
+    margin-top: 0.4rem;
+    display: block;
   }
 }
 
+/* Układ 50/50 dla Imienia i Nazwiska w rejestracji */
 .row {
   display: flex;
   gap: 1rem;
-  .half { width: 50%; }
+  .half { flex: 1; }
+}
+
+.alert-error {
+  background: rgba(232, 65, 24, 0.1);
+  border: 1px solid rgba(232, 65, 24, 0.3);
+  color: var(--primary-color);
+  padding: 0.8rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  font-size: 0.9rem;
 }
 
 button {
   width: 100%;
-  padding: 1rem;
-  background: $primary;
+  background: var(--gradient-primary);
   color: white;
+  padding: 14px;
   border: none;
   border-radius: 8px;
-  font-weight: bold;
   font-size: 1rem;
+  font-weight: 600;
   cursor: pointer;
-  transition: background 0.3s;
-  margin-top: 1rem;
+  transition: transform 0.2s, box-shadow 0.2s;
+  margin-top: 0.5rem;
 
-  // ZMIANA
-  &:hover { background: color.scale($primary, $lightness: -10%); }
-  &:disabled { background: gray; cursor: not-allowed; }
+  &:hover:not([disabled]) {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(232, 65, 24, 0.4);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    background: var(--text-muted);
+  }
 }
 
 .footer {
-  margin-top: 1.5rem;
   text-align: center;
+  margin-top: 1.5rem;
+  color: var(--text-muted);
   font-size: 0.9rem;
+
   a {
-    color: $primary;
+    color: var(--primary-color);
+    font-weight: 600;
     text-decoration: none;
     &:hover { text-decoration: underline; }
   }
