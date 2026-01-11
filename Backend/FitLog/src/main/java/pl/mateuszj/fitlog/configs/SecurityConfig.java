@@ -29,10 +29,11 @@ public class SecurityConfig {
                                 .requestMatchers("/Login").permitAll()
                                 .requestMatchers("/Register").permitAll()
                                 .requestMatchers("/User/**").permitAll()
+                                .requestMatchers("/Workout/**").permitAll()
                                 .anyRequest().authenticated()
                 )
                 .headers(headers -> headers.frameOptions(f -> f.sameOrigin()))
-                .httpBasic(withDefaults());
+                .httpBasic(basic -> basic.disable());
 
         return http.build();
     }

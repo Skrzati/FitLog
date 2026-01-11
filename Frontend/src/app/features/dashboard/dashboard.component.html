@@ -31,19 +31,174 @@
 
       <div class="stats-grid">
         <div class="card">
-          <h3>Twoja rola</h3>
-          <p>UŻYTKOWNIK</p>
+          <h3>Liczba treningów</h3>
+          <p>{{ userWorkouts().length }}</p>
         </div>
         <div class="card">
           <h3>Ostatnia aktywność</h3>
-          <p>Dzisiaj</p>
+          <p>
+            @if (userWorkouts().length > 0) {
+              {{ userWorkouts()[0].date | date:'dd.MM' }}
+            } @else {
+              Brak
+            }
+          </p>
         </div>
       </div>
 
+      <section class="workouts-section">
+        <div class="section-header">
+          <h2>Twoja Historia</h2>
+          <button class="btn-add" (click)="toggleForm()">
+            {{ showAddForm() ? 'Anuluj' : '+ Dodaj Trening' }}
+          </button>
+        </div>
+
+        @if (showAddForm()) {
+          <div class="add-workout-form">
+            
+            <div class="type-selector">
+              <button 
+                type="button"
+                [class.active]="selectedType() === 'CARDIO'" 
+                (click)="setWorkoutType('CARDIO')">
+                🏃‍♂️ Cardio
+              </button>
+              
+              <button 
+                type="button"
+                [class.active]="selectedType() === 'Gym'" 
+                (click)="setWorkoutType('Gym')">
+                🏋️‍♀️ Siłownia
+              </button>
+            </div>
+
+            <form (ngSubmit)="submitWorkout()">
+              
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Data</label>
+                  <input type="date" [(ngModel)]="newWorkout.date" name="date" required>
+                </div>
+                <div class="form-group">
+                  <label>Czas (min)</label>
+                  <input type="number" [(ngModel)]="newWorkout.duration" name="duration" placeholder="np. 45" required>
+                </div>
+                <div class="form-group">
+                  <label>Kcal</label>
+                  <input type="number" [(ngModel)]="newWorkout.calories" name="calories" placeholder="np. 300">
+                </div>
+              </div>
+
+              @if (selectedType() === 'CARDIO') {
+                <div class="form-row">
+                  <div class="form-group">
+                    <label>Dystans (km)</label>
+                    <input type="number" step="0.01" [(ngModel)]="newWorkout.distance" name="distance" placeholder="5.50">
+                  </div>
+                  <div class="form-group">
+                    <label>Śr. Tętno</label>
+                    <input type="number" [(ngModel)]="newWorkout.heartRate" name="heartRate" placeholder="145">
+                  </div>
+                </div>
+                
+                <div class="form-row three-cols">
+                  <div class="form-group">
+                    <label>Tempo (min/km)</label>
+                    <input type="number" step="0.1" [(ngModel)]="newWorkout.pace" name="pace">
+                  </div>
+                  <div class="form-group">
+                    <label>Kadencja</label>
+                    <input type="number" [(ngModel)]="newWorkout.cadence" name="cadence">
+                  </div>
+                  <div class="form-group">
+                    <label>Krok (cm)</label>
+                    <input type="number" [(ngModel)]="newWorkout.stride" name="stride">
+                  </div>
+                </div>
+              }
+
+              @if (selectedType() === 'Gym') {
+                <div class="form-row">
+                  <div class="form-group full-width">
+                    <label>Nazwa Ćwiczenia</label>
+                    <input type="text" [(ngModel)]="newWorkout.name" name="name" placeholder="np. Wyciskanie sztangi">
+                  </div>
+                </div>
+
+                <div class="form-row three-cols">
+                  <div class="form-group">
+                    <label>Ciężar (kg)</label>
+                    <input type="number" step="0.5" [(ngModel)]="newWorkout.weight" name="weight" placeholder="60">
+                  </div>
+                  <div class="form-group">
+                    <label>Serie</label>
+                    <input type="number" [(ngModel)]="newWorkout.count" name="count" placeholder="4">
+                  </div>
+                  <div class="form-group">
+                    <label>Powtórzenia</label>
+                    <input type="number" [(ngModel)]="newWorkout.reps" name="reps" placeholder="10">
+                  </div>
+                </div>
+              }
+
+              <button type="submit" class="btn-submit">
+                Zapisz {{ selectedType() === 'CARDIO' ? 'Bieg' : 'Trening' }}
+              </button>
+            </form>
+          </div>
+        }
+
+        @if (isLoadingWorkouts()) {
+          <div class="loading-state">Ładowanie treningów...</div>
+        } @else if (userWorkouts().length === 0) {
+          <div class="empty-state">
+            <p>Nie masz jeszcze żadnych treningów. Do roboty! 💪</p>
+          </div>
+        } @else {
+          <div class="workouts-list">
+            
+            @for (workout of userWorkouts(); track workout.id) {
+              <div class="workout-item">
+                
+                <div class="icon-box" [ngClass]="workout.type === 'CARDIO' ? 'cardio' : 'strength'">
+                  @if (workout.type === 'CARDIO') { 🏃‍♂️ } @else { 🏋️‍♀️ }
+                </div>
+
+                <div class="info">
+                  <span class="date">{{ workout.date | date:'dd.MM.yyyy' }}</span>
+                  
+                  @if (workout.type === 'Gym') {
+                    <h4>{{ $any(workout).name }}</h4>
+                  } @else {
+                    <h4>Trening Cardio</h4>
+                  }
+                  
+                  <span class="meta">{{ workout.duration }} min • {{ workout.calories }} kcal</span>
+                </div>
+
+                <div class="details">
+                  @if (workout.type === 'CARDIO') {
+                    @if ($any(workout).distance > 0) {
+                      <div class="badge cardio">{{ $any(workout).distance }} km</div>
+                    }
+                  } @else {
+                    <div class="badge strength">
+                      {{ $any(workout).weight }}kg • {{ $any(workout).count }}x{{ $any(workout).reps }}
+                    </div>
+                  }
+                </div>
+
+              </div>
+            }
+
+          </div>
+        }
+      </section>
+
     } @else {
       <div class="loading">
-        <h2>Ładowanie...</h2>
-        <p>Pobieranie danych z serwera...</p>
+        <h2>Ładowanie profilu...</h2>
       </div>
     }
 

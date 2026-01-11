@@ -1,6 +1,7 @@
 package pl.mateuszj.fitlog.models;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 
@@ -16,6 +17,19 @@ public class User{
     private String email;
     private String password;
     private String username;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn
+    private Workouts workouts;
+
+    public void setWorkouts(Workouts workouts) {
+        this.workouts = workouts;
+    }
+
+    public Workouts getWorkouts() {
+        return workouts;
+    }
+
     @Enumerated(EnumType.STRING)
     private Role role;
 
