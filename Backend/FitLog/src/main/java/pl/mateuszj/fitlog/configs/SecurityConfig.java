@@ -30,6 +30,7 @@ public class SecurityConfig {
                                 .requestMatchers("/Register").permitAll()
                                 .requestMatchers("/User/**").permitAll()
                                 .requestMatchers("/Workout/**").permitAll()
+                                .requestMatchers("/Workouts/**").permitAll()
                                 .anyRequest().authenticated()
                 )
                 .headers(headers -> headers.frameOptions(f -> f.sameOrigin()))

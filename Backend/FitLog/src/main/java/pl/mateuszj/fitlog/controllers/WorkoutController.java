@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.mateuszj.fitlog.models.Workouts;
 import pl.mateuszj.fitlog.models.dto.UserResponse;
+import pl.mateuszj.fitlog.models.dto.WorkoutDto;
 import pl.mateuszj.fitlog.repository.WorkoutRepository;
 import pl.mateuszj.fitlog.services.UserService;
 import pl.mateuszj.fitlog.services.WorkoutService;
@@ -32,5 +33,13 @@ public class WorkoutController {
     @GetMapping("/User/{userId}")
     public ResponseEntity<List<Workouts>> getUserWorkouts(@PathVariable Long userId) {
         return ResponseEntity.ok(workoutService.getWorkoutsByUserId(userId));
+    }
+    @PutMapping("/Update/{id}")
+    public ResponseEntity<?> updateWorkout(@PathVariable("id") long workoutId, @RequestBody WorkoutDto workoutsDto) {
+        return ResponseEntity.ok(workoutService.changeTaining(workoutId,workoutsDto));
+    }
+    @DeleteMapping("/Delete/{id}")
+    public ResponseEntity<?> deletaWorkout(@PathVariable("id") long workoutId) {
+        return ResponseEntity.ok(workoutService.deleteWorkouts(workoutId));
     }
 }

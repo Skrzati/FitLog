@@ -1,6 +1,8 @@
 package pl.mateuszj.fitlog.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import jakarta.persistence.*;
 import lombok.Getter; // Jeśli używasz Lomboka, jeśli nie - zostaw gettery/settery
 import lombok.Setter;
@@ -12,6 +14,16 @@ import java.util.Date;
 @Table(name = "Workout")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "workout_type", discriminatorType = DiscriminatorType.STRING)
+// --- DODAJ PONIŻSZY BLOK ---
+@JsonTypeInfo(
+        use = JsonTypeInfo.Id.NAME,
+        include = JsonTypeInfo.As.PROPERTY,
+        property = "type" // To nazwa pola, które zobaczy Angular
+)
+@JsonSubTypes({
+        @JsonSubTypes.Type(value = Gym.class, name = "Gym"),
+        @JsonSubTypes.Type(value = Cardio.class, name = "CARDIO")
+})
 public class Workouts {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
