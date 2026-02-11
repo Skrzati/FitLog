@@ -1,97 +1,152 @@
-/* Importujemy nowoczesną czcionkę "Inter" */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap');
+/* src/styles.scss */
 
+/* --- 1. ZMIENNE KOLORYSTYCZNE --- */
 :root {
-  /* Paleta kolorów - Nowoczesny Dark Mode */
-  --bg-color: #0f1115;          /* Prawie czarny, głęboki granat */
-  --card-bg: #181b21;           /* Trochę jaśniejszy */
-  --primary-color: #e84118;     /* Energetyczny pomarańcz/czerwień */
-  --accent-color: #00a8ff;      /* Niebieski akcent */
-  --text-color: #f5f6fa;
-  --text-muted: #7f8fa6;
-  --border-color: rgba(255, 255, 255, 0.08);
+  /* DARK MODE (Domyślny) */
+  --primary: #ff4757;
+  --bg-main: #0f1015;       /* Główne tło */
+  --bg-card: #1e1f25;       /* Tło kart */
+  --text-main: #ffffff;     /* Główny tekst */
+  --text-muted: #a0a0a0;    /* Szary tekst */
+  --border: #2f303a;        /* Ramki */
+  --input-bg: #15161a;      /* Tło inputów */
   
-  /* Gradient do przycisków/tekstów */
-  --gradient-primary: linear-gradient(135deg, #e84118 0%, #c23616 100%);
+  --success: #2ed573;
+  --error: #ff4757;
+  
+  --cardio-color: #00a8ff;
+  --strength-color: #ff9f43;
 }
 
-/* Styl dla jasnego motywu (opcjonalnie, jeśli przełączysz w ustawieniach) */
-.light-theme {
-  --bg-color: #f5f6fa;
-  --card-bg: #ffffff;
-  --primary-color: #e84118;
-  --text-color: #2f3640;
-  --text-muted: #718093;
-  --border-color: rgba(0, 0, 0, 0.1);
+/* LIGHT MODE (Nadpisuje zmienne gdy body ma klasę .light-theme) */
+body.light-theme {
+  --bg-main: #f1f2f6;
+  --bg-card: #ffffff;
+  --text-main: #2d3436;
+  --text-muted: #636e72;
+  --border: #dfe6e9;
+  --input-bg: #ffffff; /* Białe inputy w jasnym trybie */
 }
 
+/* --- 2. RESET I BAZA --- */
 body {
   margin: 0;
-  font-family: 'Inter', sans-serif; /* Nowa czcionka */
-  background-color: var(--bg-color);
-  color: var(--text-color);
-  transition: background-color 0.3s, color 0.3s;
-  overflow-x: hidden; /* Żeby nic nie wystawało na boki */
+  font-family: 'Inter', sans-serif; /* Tu używamy czcionki z index.html */
+  background-color: var(--bg-main);
+  color: var(--text-main);
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-/* Nowoczesne Inputy */
-input {
-  background: rgba(255, 255, 255, 0.05) !important;
-  border: 1px solid var(--border-color) !important;
-  color: var(--text-color) !important;
-  padding: 12px 16px;
-  border-radius: 8px;
-  font-size: 1rem;
-  transition: all 0.3s ease;
+/* --- 3. GLOBALNE INPUTY --- */
+/* Stylowanie wszystkich pól tekstowych, ale NIE checkboxów (przełączników) */
+input:not([type="checkbox"]), select, textarea {
   width: 100%;
-  box-sizing: border-box;
+  padding: 12px 16px;
+  margin: 0;
+  box-sizing: border-box; /* Ważne! */
+  
+  background-color: var(--input-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text-main);
+  font-family: 'Inter', sans-serif;
+  font-size: 1rem;
+  transition: all 0.2s;
 
   &:focus {
-    border-color: var(--primary-color) !important;
     outline: none;
-    box-shadow: 0 0 0 3px rgba(232, 65, 24, 0.2);
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(255, 71, 87, 0.2);
   }
 }
 
-/* Nowoczesne Przyciski */
-button, .btn {
+/* --- 4. GLOBALNE BUTTONY --- */
+button {
   font-family: 'Inter', sans-serif;
-  padding: 12px 24px;
-  border-radius: 8px; /* Lekkie zaokrąglenie */
-  border: none;
   cursor: pointer;
+}
+
+.btn-primary {
+  width: 100%;
+  padding: 12px;
+  background-color: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 8px;
   font-weight: 600;
   font-size: 1rem;
-  transition: transform 0.2s, box-shadow 0.2s;
-  
-  &.btn-primary {
-    background: var(--gradient-primary);
-    color: white;
-    box-shadow: 0 4px 15px rgba(232, 65, 24, 0.3);
+  transition: 0.2s;
 
-    &:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 20px rgba(232, 65, 24, 0.4);
-    }
+  &:hover:not(:disabled) {
+    filter: brightness(1.1);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 71, 87, 0.3);
   }
 
-  &.btn-outline {
-    background: transparent;
-    border: 2px solid var(--border-color);
-    color: var(--text-color);
-
-    &:hover {
-      border-color: var(--text-color);
-      background: rgba(255,255,255,0.05);
-    }
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
   }
 }
 
-/* Linki */
-a {
-  color: var(--primary-color);
-  text-decoration: none;
-  font-weight: 600;
-  transition: opacity 0.2s;
-  &:hover { opacity: 0.8; }
+/* --- 5. SYSTEM LOGOWANIA / REJESTRACJI --- */
+.auth-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 1rem;
+  background-color: var(--bg-main); /* Tło zależne od motywu */
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 400px;
+  padding: 2.5rem;
+  
+  background-color: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.1); /* Delikatny cień */
+  text-align: center;
+
+  h2 {
+    margin-top: 0;
+    margin-bottom: 2rem;
+    font-size: 1.8rem;
+    color: var(--text-main);
+  }
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+  text-align: left;
+
+  label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text-muted);
+  }
+}
+
+.auth-footer {
+  margin-top: 2rem;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  
+  a {
+    color: var(--primary);
+    text-decoration: none;
+    font-weight: 600;
+    &:hover { text-decoration: underline; }
+  }
+}
+
+/* Komunikaty błędów */
+.error-msg {
+  margin-top: 1rem;
+  color: var(--error);
+  font-weight: 500;
 }

@@ -1,18 +1,12 @@
 package pl.mateuszj.fitlog.controllers;
 
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.mateuszj.fitlog.models.User;
-import pl.mateuszj.fitlog.models.dto.UserResponse;
 import pl.mateuszj.fitlog.services.UserService;
-
-import java.util.List;
-import java.util.Optional;
 
 
 @RestController
@@ -43,15 +37,13 @@ public class UserController {
         }
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
-    @GetMapping("/User/{id}")
-    public ResponseEntity<?> name(@PathVariable Long id) {
-        UserResponse name = userService.getUserById(id);
-        if (name != null) {
-            System.out.println(name);
-            return ResponseEntity.ok(name);
-        }
-        else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Błędny login lub hasło");
-        }
+    @GetMapping("/User/username/{username}")
+    public ResponseEntity<?> getUserByUsername(@PathVariable String username) {
+        return ResponseEntity.ok(userService.getusernameDto(username));
+    }
+
+    @GetMapping("/User/id/{id}")
+    public ResponseEntity<?> getUserById(@PathVariable("id") long id) {
+        return ResponseEntity.ok(userService.getFirstnameDto(id));
     }
 }

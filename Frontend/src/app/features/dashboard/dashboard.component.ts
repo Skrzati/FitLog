@@ -1,7 +1,6 @@
 import { Component, OnInit, inject, signal, computed } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common'; // Dodaj DatePipe
 import { Router, RouterLink } from '@angular/router';
-
 import { AuthService } from '../../core/services/auth.service';
 import { User } from '../../core/models/auth.model';
 import { SettingsService } from '../../core/settings/settings.service';
@@ -11,7 +10,7 @@ import { Workout } from '../../core/models/workout.model';
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink], // DatePipe jest w CommonModule
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss'
 })
@@ -29,34 +28,36 @@ export class DashboardComponent implements OnInit {
     return this.userWorkouts().reduce((acc, curr) => acc + (curr.calories || 0), 0);
   });
 
-  // 2. Dane do wykresu (Ostatnie 7 dni)
+  // 2. NOWOŚĆ: Dane do wykresu (Ostatnie 7 dni)
   weeklyChartData = computed(() => {
     const workouts = this.userWorkouts();
     const days = [];
     const today = new Date();
     
-    // Generujemy ostatnie 7 dni
+    // Generujemy ostatnie 7 dni (od dzisiaj wstecz)
     for (let i = 6; i >= 0; i--) {
       const d = new Date();
       d.setDate(today.getDate() - i);
-      const dateStr = d.toISOString().split('T')[0];
+      const dateStr = d.toISOString().split('T')[0]; // format YYYY-MM-DD
       
+      // Sumujemy kalorie dla tego dnia
       const dailyKcal = workouts
         .filter(w => w.date.startsWith(dateStr))
         .reduce((sum, w) => sum + (w.calories || 0), 0);
 
       days.push({
-        dayName: d.toLocaleDateString('pl-PL', { weekday: 'short' }),
+        dayName: d.toLocaleDateString('pl-PL', { weekday: 'short' }), // np. "pon."
         value: dailyKcal,
         date: dateStr
       });
     }
 
-    const maxVal = Math.max(...days.map(d => d.value), 1);
+    // Znajdź maksymalną wartość, żeby wyskalować słupki (na 100% wysokości)
+    const maxVal = Math.max(...days.map(d => d.value), 1); // min 1 żeby nie dzielić przez 0
 
     return days.map(d => ({
       ...d,
-      heightPercent: Math.round((d.value / maxVal) * 100)
+      heightPercent: Math.round((d.value / maxVal) * 100) // np. 80%
     }));
   });
 
@@ -67,7 +68,6 @@ export class DashboardComponent implements OnInit {
     if (user && user.id) {
       this.workoutService.getWorkoutsForUser(user.id).subscribe({
         next: (data) => {
-          // Sortowanie od najnowszych
           const sorted = data.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
           this.userWorkouts.set(sorted);
         }

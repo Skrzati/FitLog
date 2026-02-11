@@ -5,12 +5,10 @@ import pl.mateuszj.fitlog.models.Cardio;
 import pl.mateuszj.fitlog.models.Gym;
 import pl.mateuszj.fitlog.models.User;
 import pl.mateuszj.fitlog.models.Workouts;
-import pl.mateuszj.fitlog.models.dto.UserResponse;
-import pl.mateuszj.fitlog.models.dto.WorkoutDto;
+import pl.mateuszj.fitlog.models.dto.workoutDto.WorkoutDto;
 import pl.mateuszj.fitlog.repository.UserRepository;
 import pl.mateuszj.fitlog.repository.WorkoutRepository;
 
-import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -67,8 +65,16 @@ public class WorkoutService {
         return workoutRepository.save(existingWorkouts);
     }
     public Workouts deleteWorkouts(long id) {
-        Workouts workouts = workoutRepository.findById(id).orElse(null);
-        workoutRepository.delete(workouts);
+        Workouts existingWorkouts = workoutRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Nie znaleziono użytkownika"));
+        if(existingWorkouts instanceof Gym) {
+            workoutRepository.delete(existingWorkouts);
+            return  existingWorkouts;
+        }
+        else  if(existingWorkouts instanceof Cardio) {
+            workoutRepository.delete(existingWorkouts);
+            return  existingWorkouts;
+        }
         return null;
     }
 }

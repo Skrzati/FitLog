@@ -1,47 +1,38 @@
+// src/app/core/settings/settings.service.ts
 import { Injectable, signal, effect } from '@angular/core';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SettingsService {
-  // Domyślne wartości (true = Ciemny motyw, false = Pokaż Imię)
   isDarkMode = signal<boolean>(true); 
   showUsername = signal<boolean>(false); 
 
   constructor() {
-    // 1. Przy starcie ładujemy zapisane ustawienia z localStorage
-    const savedTheme = localStorage.getItem('theme');
-    const savedGreeting = localStorage.getItem('showUsername');
-
-    if (savedTheme === 'light') {
-      this.isDarkMode.set(false);
+    // Ładowanie z localStorage
+    if (typeof localStorage !== 'undefined') {
+      const savedTheme = localStorage.getItem('theme');
+      this.isDarkMode.set(savedTheme !== 'light'); // Jeśli nie 'light', to dark
     }
 
-    if (savedGreeting === 'true') {
-      this.showUsername.set(true);
-    }
-
-    // 2. Efekt: Gdy zmieni się sygnał isDarkMode, automatycznie podmieniamy klasę w <body>
+    // Ten efekt wykonuje się automatycznie przy zmianie sygnału
     effect(() => {
-      if (this.isDarkMode()) {
-        document.body.classList.remove('light-theme');
-        localStorage.setItem('theme', 'dark');
-      } else {
-        document.body.classList.add('light-theme');
-        localStorage.setItem('theme', 'light');
+      if (typeof document !== 'undefined') {
+        if (this.isDarkMode()) {
+          document.body.classList.remove('light-theme');
+          localStorage.setItem('theme', 'dark');
+        } else {
+          document.body.classList.add('light-theme'); // <-- To zmienia zmienne CSS
+          localStorage.setItem('theme', 'light');
+        }
       }
-    });
-
-    // 3. Efekt: Zapisujemy preferencję powitania
-    effect(() => {
-      localStorage.setItem('showUsername', String(this.showUsername()));
     });
   }
 
   toggleTheme() {
     this.isDarkMode.update(val => !val);
   }
-
+  
   toggleGreeting() {
     this.showUsername.update(val => !val);
   }

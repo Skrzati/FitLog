@@ -1,4 +1,4 @@
-package pl.mateuszj.fitlog.models.dto;
+package pl.mateuszj.fitlog.models.dto.workoutDto;
 
 import java.util.Date;
 

@@ -5,7 +5,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import pl.mateuszj.fitlog.models.Role;
 import pl.mateuszj.fitlog.models.User;
-import pl.mateuszj.fitlog.models.dto.UserResponse;
+import pl.mateuszj.fitlog.models.dto.userDto.Firstname;
+import pl.mateuszj.fitlog.models.dto.userDto.Username;
 import pl.mateuszj.fitlog.repository.UserRepository;
 
 
@@ -55,16 +56,23 @@ public class UserService {
         }
         return null;
     }
-    public UserResponse getUserById(long id) {
-        User user = userRepository.findById(id)
+    public Username getusernameDto(String username) {
+        User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("Nie znaleziono użytkownika"));
-        UserResponse response = new UserResponse(
+        return new Username(
                 user.getId(),
-                user.getFirstName(),
                 user.getUsername()
         );
-        return response;
     }
+    public Firstname getFirstnameDto(Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Nie znaleziono użytkownika"));
+        return new Firstname(
+                user.getId(),
+                user.getFirstName()
+        );
+    }
+
 
 
 

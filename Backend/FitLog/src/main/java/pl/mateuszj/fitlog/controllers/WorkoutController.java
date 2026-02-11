@@ -1,13 +1,9 @@
 package pl.mateuszj.fitlog.controllers;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.mateuszj.fitlog.models.Workouts;
-import pl.mateuszj.fitlog.models.dto.UserResponse;
-import pl.mateuszj.fitlog.models.dto.WorkoutDto;
-import pl.mateuszj.fitlog.repository.WorkoutRepository;
+import pl.mateuszj.fitlog.models.dto.workoutDto.WorkoutDto;
 import pl.mateuszj.fitlog.services.UserService;
 import pl.mateuszj.fitlog.services.WorkoutService;
 
