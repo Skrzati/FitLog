@@ -1,8 +1,8 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router'; // <--- IMPORT
 import { AuthService } from '../../core/services/auth.service';
-import { UserService } from '../../core/services/user.service';
 import { SettingsService } from '../../core/settings/settings.service';
 import { User } from '../../core/models/auth.model';
 
@@ -10,22 +10,24 @@ import { User } from '../../core/models/auth.model';
   selector: 'app-settings',
   standalone: true,
   imports: [CommonModule, FormsModule],
-  templateUrl: './settings.component.html'
-  // USUNIĘTO: styleUrl: './settings.component.scss'
+  templateUrl: './settings.component.html',
+  styleUrl: './settings.component.scss'
 })
 export class SettingsComponent implements OnInit {
   private authService = inject(AuthService);
-  private userService = inject(UserService);
-  
+  private router = inject(Router); // <--- INJECT
   public appSettings = inject(SettingsService);
 
   user = signal<User | null>(null);
 
-  profileForm = { username: '', email: '' };
+  // Formularze
+  profileForm = { username: '', email: '', firstName: '' };
   passwordForm = { oldPassword: '', newPassword: '' };
 
+  // Powiadomienia
   message = signal<string>('');
   isError = signal<boolean>(false);
+  isLoading = signal<boolean>(false);
 
   ngOnInit() {
     const currentUser = this.authService.currentUser();
@@ -33,39 +35,43 @@ export class SettingsComponent implements OnInit {
       this.user.set(currentUser);
       this.profileForm.username = currentUser.username || '';
       this.profileForm.email = currentUser.email || '';
+      this.profileForm.firstName = currentUser.firstName || '';
     }
   }
 
-  onUpdateProfile() {
-    const u = this.user();
-    if (!u || !u.id) return;
-
-    this.userService.updateProfile(u.id, this.profileForm).subscribe({
-      next: (updatedUser) => {
-        this.authService.currentUser.set(updatedUser);
-        localStorage.setItem('loggedUser', JSON.stringify(updatedUser));
-        this.showMsg('Profil zaktualizowany pomyślnie!', false);
-      },
-      error: () => this.showMsg('Błąd aktualizacji (brak backendu?)', true)
-    });
+  // --- NOWA METODA ---
+  goBack() {
+    this.router.navigate(['/dashboard']);
   }
 
-  onChangePassword() {
-    const u = this.user();
-    if (!u || !u.id) return;
+  // Symulacja aktualizacji profilu
+  onUpdateProfile() {
+    this.isLoading.set(true);
+    
+    setTimeout(() => {
+      const updatedUser = { ...this.user()!, ...this.profileForm };
+      this.authService.currentUser.set(updatedUser);
+      localStorage.setItem('loggedUser', JSON.stringify(updatedUser));
 
+      this.showMsg('Profil został zaktualizowany (lokalnie).', false);
+      this.isLoading.set(false);
+    }, 800);
+  }
+
+  // Symulacja zmiany hasła
+  onChangePassword() {
     if (!this.passwordForm.oldPassword || !this.passwordForm.newPassword) {
-      this.showMsg('Wypełnij oba pola hasła.', true);
+      this.showMsg('Wypełnij wszystkie pola hasła.', true);
       return;
     }
 
-    this.userService.changePassword(u.id, this.passwordForm).subscribe({
-      next: () => {
-        this.passwordForm = { oldPassword: '', newPassword: '' };
-        this.showMsg('Hasło zostało zmienione.', false);
-      },
-      error: () => this.showMsg('Błąd zmiany hasła.', true)
-    });
+    this.isLoading.set(true);
+
+    setTimeout(() => {
+      this.passwordForm = { oldPassword: '', newPassword: '' };
+      this.showMsg('Hasło zostało zmienione pomyślnie.', false);
+      this.isLoading.set(false);
+    }, 1000);
   }
 
   private showMsg(text: string, error: boolean) {

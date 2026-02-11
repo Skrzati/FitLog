@@ -10,8 +10,8 @@ export class UserService {
   private http = inject(HttpClient);
   private apiUrl = 'http://localhost:8080/User'; 
 
-  // Aktualizacja profilu
-  updateProfile(id: number, data: { username: string, email: string }): Observable<User> {
+  // ZMIANA: Dodano opcjonalne firstName do typu danych
+  updateProfile(id: number, data: { username: string, email: string, firstName?: string }): Observable<User> {
     return this.http.put<User>(`${this.apiUrl}/${id}`, data);
   }
 

@@ -1,8 +1,14 @@
 <div class="settings-container">
   
+  <div class="top-nav">
+    <button class="btn-back" (click)="goBack()">
+      <span class="arrow">&larr;</span> Wróć do Pulpitu
+    </button>
+  </div>
+  
   <header class="page-header">
-    <h2>Ustawienia Konta</h2>
-    <p>Zarządzaj swoimi danymi i wyglądem aplikacji.</p>
+    <h2>Ustawienia</h2>
+    <p>Dostosuj aplikację do swoich potrzeb</p>
   </header>
 
   @if (message()) {
@@ -16,7 +22,7 @@
     <div class="card settings-card">
       <div class="card-header">
         <div class="icon-box user">👤</div>
-        <h3>Dane Profilowe</h3>
+        <h3>Mój Profil</h3>
       </div>
       
       <form (ngSubmit)="onUpdateProfile()">
@@ -24,11 +30,20 @@
           <label>Nazwa Użytkownika</label>
           <input type="text" [(ngModel)]="profileForm.username" name="username" required>
         </div>
+
         <div class="form-group">
-          <label>Adres Email</label>
+          <label>Imię (Opcjonalne)</label>
+          <input type="text" [(ngModel)]="profileForm.firstName" name="firstName" placeholder="Jak do Ciebie mówić?">
+        </div>
+
+        <div class="form-group">
+          <label>Email</label>
           <input type="email" [(ngModel)]="profileForm.email" name="email">
         </div>
-        <button type="submit" class="btn-primary">Zapisz Zmiany</button>
+
+        <button type="submit" class="btn-primary" [disabled]="isLoading()">
+          {{ isLoading() ? 'Zapisywanie...' : 'Zapisz Zmiany' }}
+        </button>
       </form>
     </div>
 
@@ -42,13 +57,13 @@
         <div class="toggle-row">
           <div class="toggle-info">
             <span class="label">Tryb Ciemny</span>
-            <span class="desc">Przełącz motyw aplikacji</span>
+            <span class="desc">Ciemny motyw interfejsu</span>
           </div>
           <label class="switch">
             <input type="checkbox" 
                    [checked]="appSettings.isDarkMode()" 
                    (change)="appSettings.toggleTheme()">
-            <span class="slider round"></span>
+            <span class="slider"></span>
           </label>
         </div>
 
@@ -57,13 +72,13 @@
         <div class="toggle-row">
           <div class="toggle-info">
             <span class="label">Pokaż Nick</span>
-            <span class="desc">Użyj username w powitaniu</span>
+            <span class="desc">Użyj nicku zamiast imienia na pulpicie</span>
           </div>
           <label class="switch">
             <input type="checkbox" 
                    [checked]="appSettings.showUsername()" 
                    (change)="appSettings.toggleGreeting()">
-            <span class="slider round"></span>
+            <span class="slider"></span>
           </label>
         </div>
       </div>
@@ -72,19 +87,21 @@
     <div class="card settings-card">
       <div class="card-header">
         <div class="icon-box lock">🔒</div>
-        <h3>Bezpieczeństwo</h3>
+        <h3>Zmiana Hasła</h3>
       </div>
 
       <form (ngSubmit)="onChangePassword()">
         <div class="form-group">
-          <label>Obecne Hasło</label>
+          <label>Stare Hasło</label>
           <input type="password" [(ngModel)]="passwordForm.oldPassword" name="oldPassword" placeholder="••••••">
         </div>
         <div class="form-group">
           <label>Nowe Hasło</label>
           <input type="password" [(ngModel)]="passwordForm.newPassword" name="newPassword" placeholder="••••••">
         </div>
-        <button type="submit" class="btn-outline">Zmień Hasło</button>
+        <button type="submit" class="btn-outline" [disabled]="isLoading()">
+          Zmień Hasło
+        </button>
       </form>
     </div>
 

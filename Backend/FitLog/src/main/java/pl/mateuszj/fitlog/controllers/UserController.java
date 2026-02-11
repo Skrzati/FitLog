@@ -10,7 +10,7 @@ import pl.mateuszj.fitlog.services.UserService;
 
 
 @RestController
-@RequestMapping
+@RequestMapping("/User")
 public class UserController {
 
     private final UserService userService;
@@ -37,12 +37,12 @@ public class UserController {
         }
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
-    @GetMapping("/User/username/{username}")
+    @GetMapping("/username/{username}")
     public ResponseEntity<?> getUserByUsername(@PathVariable String username) {
         return ResponseEntity.ok(userService.getusernameDto(username));
     }
 
-    @GetMapping("/User/id/{id}")
+    @GetMapping("/id/{id}")
     public ResponseEntity<?> getUserById(@PathVariable("id") long id) {
         return ResponseEntity.ok(userService.getFirstnameDto(id));
     }

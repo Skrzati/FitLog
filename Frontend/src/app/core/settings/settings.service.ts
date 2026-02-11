@@ -1,4 +1,3 @@
-// src/app/core/settings/settings.service.ts
 import { Injectable, signal, effect } from '@angular/core';
 
 @Injectable({
@@ -9,22 +8,32 @@ export class SettingsService {
   showUsername = signal<boolean>(false); 
 
   constructor() {
-    // Ładowanie z localStorage
+    // Ładowanie ustawień z localStorage przy starcie
     if (typeof localStorage !== 'undefined') {
       const savedTheme = localStorage.getItem('theme');
-      this.isDarkMode.set(savedTheme !== 'light'); // Jeśli nie 'light', to dark
+      this.isDarkMode.set(savedTheme !== 'light'); // Domyślnie dark, chyba że zapisano light
+
+      const savedNickPref = localStorage.getItem('showUsername');
+      this.showUsername.set(savedNickPref === 'true');
     }
 
-    // Ten efekt wykonuje się automatycznie przy zmianie sygnału
+    // Efekt dla Motywu (Theme)
     effect(() => {
       if (typeof document !== 'undefined') {
         if (this.isDarkMode()) {
           document.body.classList.remove('light-theme');
           localStorage.setItem('theme', 'dark');
         } else {
-          document.body.classList.add('light-theme'); // <-- To zmienia zmienne CSS
+          document.body.classList.add('light-theme');
           localStorage.setItem('theme', 'light');
         }
+      }
+    });
+
+    // Efekt dla Preferencji Nicka
+    effect(() => {
+      if (typeof localStorage !== 'undefined') {
+        localStorage.setItem('showUsername', String(this.showUsername()));
       }
     });
   }

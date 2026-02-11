@@ -1,12 +1,13 @@
 <div class="dashboard-container">
+  
   <aside class="sidebar">
     <div class="logo">FitLog</div>
     <nav>
-      <a class="active">Pulpit</a>
-      <a routerLink="/workouts">Treningi</a>
-      <a>Dieta</a>
-      <a routerLink="/settings">Ustawienia</a>
-      <a (click)="logout()">Wyloguj</a>
+      <a class="active"><span>🏠</span> Pulpit</a>
+      <a routerLink="/workouts"><span>💪</span> Treningi</a>
+      <a><span>🥗</span> Dieta</a>
+      <a routerLink="/settings"><span>⚙️</span> Ustawienia</a>
+      <a (click)="logout()"><span>🚪</span> Wyloguj</a>
     </nav>
   </aside>
 
@@ -14,17 +15,27 @@
     
     @if (userProfile(); as user) {
       <header>
-        <h1>Cześć, {{ user.username }}!</h1>
-        <p>Twoje postępy w tym tygodniu.</p>
+        @if (settingsService.showUsername()) {
+          <h1>Witaj, {{ user.username }}! 👋</h1>
+        } @else {
+          <h1>Witaj, {{ user.firstName || user.username }}! 👋</h1>
+        }
+        <p>Oto podsumowanie Twoich postępów w tym tygodniu.</p>
       </header>
 
       <section class="chart-section">
         <div class="card chart-card">
-           <div class="chart-header"><h3>Aktywność (Ostatnie 7 dni)</h3></div>
+           <div class="chart-header">
+             <h3>Aktywność (Ostatnie 7 dni)</h3>
+           </div>
            <div class="chart-container">
               @for (day of weeklyChartData(); track day.date) {
                 <div class="chart-bar-wrapper">
-                  <div class="bar" [style.height.%]="day.heightPercent" [class.active]="day.heightPercent > 0"></div>
+                  <div class="bar" 
+                       [style.height.%]="day.heightPercent" 
+                       [class.active]="day.heightPercent > 0"
+                       [title]="day.value + ' kcal'">
+                  </div>
                   <span class="day-label">{{ day.dayName }}</span>
                 </div>
               }
@@ -35,21 +46,35 @@
       <div class="stats-grid">
         <div class="card">
           <div class="card-icon blue">💪</div>
-          <div><h3>Treningi</h3><p class="big-number">{{ userWorkouts().length }}</p></div>
+          <div>
+            <h3>Treningi</h3>
+            <p class="big-number">{{ userWorkouts().length }}</p>
+          </div>
         </div>
         <div class="card">
           <div class="card-icon orange">🔥</div>
-          <div><h3>Kalorie</h3><p class="big-number">{{ totalCalories() }}</p></div>
+          <div>
+            <h3>Spalone Kalorie</h3>
+            <p class="big-number">{{ totalCalories() }}</p>
+          </div>
         </div>
       </div>
 
       <section class="recent-activity">
         <div class="section-header">
           <h2>Ostatnie Aktywności</h2>
-          <a routerLink="/workouts" class="view-all-link">Zobacz wszystkie &rarr;</a>
+          <a routerLink="/workouts" class="view-all-link">
+            Zobacz wszystkie <span>&rarr;</span>
+          </a>
         </div>
 
         <div class="activity-list">
+          @if (userWorkouts().length === 0) {
+            <div class="card" style="text-align: center; color: var(--text-muted);">
+              Brak aktywności. Dodaj swój pierwszy trening!
+            </div>
+          }
+
           @for (workout of userWorkouts().slice(0, 5); track workout.id) {
             <div class="activity-item">
               
@@ -62,7 +87,7 @@
                     {{ workout.type === 'Gym' ? $any(workout).name || 'Siłowy' : 'Cardio' }}
                   </span>
                   <span class="subtitle">
-                    {{ workout.date | date:'dd.MM' }} • {{ workout.duration }} min • {{ workout.calories }} kcal
+                    {{ workout.date | date:'dd.MM.yyyy' }} • {{ workout.duration }} min • {{ workout.calories }} kcal
                   </span>
                 </div>
               </div>
@@ -72,7 +97,7 @@
                   <span class="badge highlight">{{ $any(workout).distance }} km</span>
                 }
                 @if (workout.type === 'Gym') {
-                   <span class="badge highlight">{{ $any(workout).weight }}kg</span>
+                   <span class="badge highlight">{{ $any(workout).weight }} kg</span>
                 }
               </div>
 

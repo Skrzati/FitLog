@@ -8,7 +8,7 @@ import { User } from '../models/auth.model';
 })
 export class AuthService {
   private http = inject(HttpClient);
-  private apiUrl = 'http://localhost:8080'; 
+  private apiUrl = 'http://localhost:8080/User'; 
 
   // 1. ZMIANA: Inicjalizujemy sygnał sprawdzając localStorage
   // Zamiast 'null', wywołujemy metodę pomocniczą
