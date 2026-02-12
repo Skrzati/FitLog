@@ -35,6 +35,7 @@ public class UserController {
     }
     @PostMapping("/register")
     public ResponseEntity<Void> register(@RequestBody RegisterRequest registerRequest) {
+        userService.registration(registerRequest);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
     @GetMapping("/username/{username}")

@@ -21,7 +21,7 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public User register(RegisterRequest registerRequest) {
+    public User registration(RegisterRequest registerRequest) {
         if (userRepository.findByUsername(registerRequest.username()).isPresent()) {
             throw new RuntimeException("Użytkownik o podanej nazwie użytkownika już istnieje");
         }
