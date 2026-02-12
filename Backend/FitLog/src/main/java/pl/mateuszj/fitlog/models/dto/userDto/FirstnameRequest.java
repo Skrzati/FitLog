@@ -1,6 +1,6 @@
 package pl.mateuszj.fitlog.models.dto.userDto;
 
-public record Firstname(
+public record FirstnameRequest(
         long id,
         String firstname
 ){

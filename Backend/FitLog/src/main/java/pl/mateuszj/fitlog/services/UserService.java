@@ -5,9 +5,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import pl.mateuszj.fitlog.models.Role;
 import pl.mateuszj.fitlog.models.User;
-import pl.mateuszj.fitlog.models.dto.userDto.ChangePasswordRequest;
-import pl.mateuszj.fitlog.models.dto.userDto.Firstname;
-import pl.mateuszj.fitlog.models.dto.userDto.Username;
+import pl.mateuszj.fitlog.models.dto.userDto.FirstnameRequest;
+import pl.mateuszj.fitlog.models.dto.userDto.RegisterRequest;
+import pl.mateuszj.fitlog.models.dto.userDto.UsernameRequest;
 import pl.mateuszj.fitlog.repository.UserRepository;
 
 
@@ -21,15 +21,23 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public User addUser(User user) {
-        if (userRepository.findByUsername(user.getUsername()).isPresent()) {
-            return null;
-        } else if (userRepository.findByEmail(user.getEmail()).isPresent()) {
-            return null;
+    public User register(RegisterRequest registerRequest) {
+        if (userRepository.findByUsername(registerRequest.username()).isPresent()) {
+            throw new RuntimeException("Użytkownik o podanej nazwie użytkownika już istnieje");
         }
-        user.setRole(Role.USER);
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        return userRepository.save(user);
+        else if(userRepository.findByEmail(registerRequest.email()).isPresent()) {
+            throw new RuntimeException("Użytkownik o podanym emailu użytkownika już istnieje");
+        }
+        else {
+            User user = new User();
+            user.setUsername(registerRequest.username());
+            user.setFirstName(registerRequest.firstname());
+            user.setLastName(registerRequest.lastname());
+            user.setEmail(registerRequest.email());
+            user.setRole(Role.USER);
+            user.setPassword(passwordEncoder.encode(registerRequest.password()));
+            return userRepository.save(user);
+        }
     }
     public User getUserByEmail(String email) {
         return userRepository.findByEmail(email)
@@ -45,15 +53,22 @@ public class UserService {
             if (passwordEncoder.matches(user.getPassword(), data.getPassword())) {
                 return data;
             }
+            else{
+                throw new RuntimeException();
+            }
         }
         else if (userRepository.findByUsername(user.getUsername()).isPresent()) {
             User data = userRepository.findByUsername(user.getUsername()).get();
             if (passwordEncoder.matches(user.getPassword(), data.getPassword())) {
                 return data;
             }
-
+            else {
+                throw new RuntimeException();
+            }
         }
-        return null;
+        else {
+            throw new RuntimeException();
+        }
     }
     public User changePassword(long id,String oldPassword, String newPassword ) {
         if (userRepository.findById(id).isPresent()) {
@@ -81,18 +96,18 @@ public class UserService {
             throw new RuntimeException("Nie znaleziono użytkownika");
         }
     }
-    public Username getusernameDto(String username) {
+    public UsernameRequest getusernameDto(String username) {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("Nie znaleziono użytkownika"));
-        return new Username(
+        return new UsernameRequest(
                 user.getId(),
                 user.getUsername()
         );
     }
-    public Firstname getFirstnameDto(Long id) {
+    public FirstnameRequest getFirstnameDto(Long id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Nie znaleziono użytkownika"));
-        return new Firstname(
+        return new FirstnameRequest(
                 user.getId(),
                 user.getFirstName()
         );

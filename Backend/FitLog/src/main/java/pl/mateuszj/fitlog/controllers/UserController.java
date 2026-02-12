@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import pl.mateuszj.fitlog.models.User;
 import pl.mateuszj.fitlog.models.dto.userDto.ChangePasswordRequest;
 import pl.mateuszj.fitlog.models.dto.userDto.ChangeUsernameRequest;
+import pl.mateuszj.fitlog.models.dto.userDto.RegisterRequest;
 import pl.mateuszj.fitlog.services.UserService;
 
 
@@ -33,12 +34,8 @@ public class UserController {
         }
     }
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody User user) {
-        User created = userService.addUser(user);
-        if (created != null) {
-            return new ResponseEntity<>(created, HttpStatus.CREATED);
-        }
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+    public ResponseEntity<Void> register(@RequestBody RegisterRequest registerRequest) {
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
     @GetMapping("/username/{username}")
     public ResponseEntity<?> getUserByUsername(@PathVariable String username) {
