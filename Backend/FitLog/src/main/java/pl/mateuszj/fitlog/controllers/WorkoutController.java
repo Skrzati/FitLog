@@ -10,7 +10,7 @@ import pl.mateuszj.fitlog.services.WorkoutService;
 import java.util.List;
 
 @RestController
-@RequestMapping("/Workout")
+@RequestMapping("/workout")
 public class WorkoutController {
 
     private final WorkoutService workoutService;
@@ -21,20 +21,20 @@ public class WorkoutController {
         this.userService = userService;
     }
 
-    @PostMapping("/User/{username}")
+    @PostMapping("/user/{username}")
     public ResponseEntity<?> save(@PathVariable String username, @RequestBody Workouts workouts) {
         
         return ResponseEntity.ok(workoutService.saveWorkouts(username,workouts));
     }
-    @GetMapping("/User/{userId}")
+    @GetMapping("/user/{userId}")
     public ResponseEntity<List<Workouts>> getUserWorkouts(@PathVariable Long userId) {
         return ResponseEntity.ok(workoutService.getWorkoutsByUserId(userId));
     }
-    @PutMapping("/Update/{id}")
+    @PutMapping("/update/{id}")
     public ResponseEntity<?> updateWorkout(@PathVariable("id") long workoutId, @RequestBody WorkoutDto workoutsDto) {
         return ResponseEntity.ok(workoutService.changeTaining(workoutId,workoutsDto));
     }
-    @DeleteMapping("/Delete/{id}")
+    @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> deletaWorkout(@PathVariable("id") long workoutId) {
         return ResponseEntity.ok(workoutService.deleteWorkouts(workoutId));
     }

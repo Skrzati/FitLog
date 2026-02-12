@@ -5,6 +5,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import pl.mateuszj.fitlog.models.Role;
 import pl.mateuszj.fitlog.models.User;
+import pl.mateuszj.fitlog.models.dto.userDto.ChangePasswordRequest;
 import pl.mateuszj.fitlog.models.dto.userDto.Firstname;
 import pl.mateuszj.fitlog.models.dto.userDto.Username;
 import pl.mateuszj.fitlog.repository.UserRepository;
@@ -42,19 +43,43 @@ public class UserService {
         if (userRepository.findByEmail(user.getEmail()).isPresent()) {
             User data = userRepository.findByEmail(user.getEmail()).get();
             if (passwordEncoder.matches(user.getPassword(), data.getPassword())) {
-                System.out.println("Email");
                 return data;
             }
         }
         else if (userRepository.findByUsername(user.getUsername()).isPresent()) {
             User data = userRepository.findByUsername(user.getUsername()).get();
             if (passwordEncoder.matches(user.getPassword(), data.getPassword())) {
-                System.out.println("Username");
                 return data;
             }
 
         }
         return null;
+    }
+    public User changePassword(long id,String oldPassword, String newPassword ) {
+        if (userRepository.findById(id).isPresent()) {
+            User data = userRepository.findById(id).get();
+            if(passwordEncoder.matches(oldPassword, data.getPassword())) {
+                data.setPassword(passwordEncoder.encode(newPassword));
+                return userRepository.save(data);
+            }
+            else {
+                throw new RuntimeException("Niepoprawne hasło");
+            }
+        }
+        else {
+            throw new RuntimeException("Nie znaleziono użytkownika");
+        }
+    }
+    public User changeUsername(Long id,String newUsername) {
+        if (userRepository.findById(id).isPresent()) {
+            User data = userRepository.findById(id).get();
+            data.setUsername(newUsername);
+            System.out.println(newUsername);
+            return userRepository.save(data);
+        }
+        else {
+            throw new RuntimeException("Nie znaleziono użytkownika");
+        }
     }
     public Username getusernameDto(String username) {
         User user = userRepository.findByUsername(username)
@@ -72,11 +97,5 @@ public class UserService {
                 user.getFirstName()
         );
     }
-
-
-
-
-
-
 
 }

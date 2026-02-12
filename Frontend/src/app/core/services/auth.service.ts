@@ -8,7 +8,7 @@ import { User } from '../models/auth.model';
 })
 export class AuthService {
   private http = inject(HttpClient);
-  private apiUrl = 'http://localhost:8080/User'; 
+  private apiUrl = 'http://localhost:8080/user'; 
 
   // 1. ZMIANA: Inicjalizujemy sygnał sprawdzając localStorage
   // Zamiast 'null', wywołujemy metodę pomocniczą
@@ -32,7 +32,7 @@ export class AuthService {
   }
 
   login(user: User) {
-    return this.http.post<User>(`${this.apiUrl}/Login`, user).pipe(
+    return this.http.post<User>(`${this.apiUrl}/login`, user).pipe(
       tap((responseUser) => {
         this.currentUser.set(responseUser);
         
@@ -43,7 +43,7 @@ export class AuthService {
   }
 
   register(user: User) {
-    return this.http.post<User>(`${this.apiUrl}/Register`, user).pipe(
+    return this.http.post<User>(`${this.apiUrl}/register`, user).pipe(
       tap((responseUser) => {
         this.currentUser.set(responseUser);
         

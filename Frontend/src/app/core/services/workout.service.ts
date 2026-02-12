@@ -13,20 +13,19 @@ export class WorkoutService {
   constructor() { }
 
   addWorkout(username: string, workout: Workout): Observable<Workout> {
-    return this.http.post<Workout>(`${this.apiUrl}/Workout/User/${username}`, workout);
+    return this.http.post<Workout>(`${this.apiUrl}/workout/user/${username}`, workout);
   }
 
   getWorkoutsForUser(userId: number): Observable<Workout[]> {
-    return this.http.get<Workout[]>(`${this.apiUrl}/Workout/User/${userId}`);
+    return this.http.get<Workout[]>(`${this.apiUrl}/workout/user/${userId}`);
   }
 
   // --- NOWA METODA, której brakowało ---
   deleteWorkout(id: number): Observable<any> {
-    // Endpoint: DELETE http://localhost:8080/Workout/Delete/{id}
-    return this.http.delete(`${this.apiUrl}/Workout/Delete/${id}`);
+    return this.http.delete(`${this.apiUrl}/Workout/delete/${id}`);
   }
   updateWorkout(id: number, workoutData: any) {
 
-  return this.http.put<Workout>(`${this.apiUrl}/Workout/Update/${id}`, workoutData);
+  return this.http.put<Workout>(`${this.apiUrl}/workout/update/${id}`, workoutData);
 }
 }

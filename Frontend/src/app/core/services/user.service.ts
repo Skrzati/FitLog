@@ -1,22 +1,24 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { User } from '../models/auth.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserService {
   private http = inject(HttpClient);
-  private apiUrl = 'http://localhost:8080/User'; 
+  // Zakładam, że Twój UserController ma @RequestMapping("/User")
+  private apiUrl = 'http://localhost:8080/user'; 
 
-  // ZMIANA: Dodano opcjonalne firstName do typu danych
-  updateProfile(id: number, data: { username: string, email: string, firstName?: string }): Observable<User> {
-    return this.http.put<User>(`${this.apiUrl}/${id}`, data);
+  // Endpoint: @PutMapping("/username/id/{id}")
+  // Body: ChangeUsernameRequest { newUsername: string }
+  changeUsername(id: number, newUsername: string): Observable<any> {
+    return this.http.put(`${this.apiUrl}/username/id/${id}`, { newUsername });
   }
 
-  // Zmiana hasła
-  changePassword(id: number, data: { oldPassword: string, newPassword: string }): Observable<any> {
-    return this.http.put(`${this.apiUrl}/${id}/password`, data, { responseType: 'text' });
+  // Endpoint: @PutMapping("/password/id/{id}")
+  // Body: ChangePasswordRequest { oldPassword: string, newPassword: string }
+  changePassword(id: number, oldPassword: string, newPassword: string): Observable<any> {
+    return this.http.put(`${this.apiUrl}/password/id/${id}`, { oldPassword, newPassword });
   }
 }

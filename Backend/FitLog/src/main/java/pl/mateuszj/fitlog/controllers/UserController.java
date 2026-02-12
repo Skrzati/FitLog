@@ -1,16 +1,19 @@
 package pl.mateuszj.fitlog.controllers;
 
 
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.mateuszj.fitlog.models.User;
+import pl.mateuszj.fitlog.models.dto.userDto.ChangePasswordRequest;
+import pl.mateuszj.fitlog.models.dto.userDto.ChangeUsernameRequest;
 import pl.mateuszj.fitlog.services.UserService;
 
 
 @RestController
-@RequestMapping("/User")
+@RequestMapping("/user")
 public class UserController {
 
     private final UserService userService;
@@ -19,7 +22,7 @@ public class UserController {
         this.userService = userService;
     }
 
-    @PostMapping("/Login")
+    @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody User user) {
         User loginAccept = userService.userData(user);
         if (loginAccept != null) {
@@ -29,7 +32,7 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Błędny login lub hasło");
         }
     }
-    @PostMapping("/Register")
+    @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody User user) {
         User created = userService.addUser(user);
         if (created != null) {
@@ -43,7 +46,15 @@ public class UserController {
     }
 
     @GetMapping("/id/{id}")
-    public ResponseEntity<?> getUserById(@PathVariable("id") long id) {
+    public ResponseEntity<?> getUserById(@PathVariable long id) {
         return ResponseEntity.ok(userService.getFirstnameDto(id));
+    }
+    @PutMapping("/password/id/{id}")
+    public ResponseEntity<?> updatePassword(@PathVariable long id,@Valid @RequestBody ChangePasswordRequest changePasswordRequest) {
+        return ResponseEntity.ok(userService.changePassword(id, changePasswordRequest.oldPassword(),changePasswordRequest.newPassword()));
+    }
+    @PutMapping("/username/id/{id}")
+    public ResponseEntity<?> updateUsername(@PathVariable long id, @RequestBody ChangeUsernameRequest changeUsernameRequest) {
+        return ResponseEntity.ok(userService.changeUsername(id, changeUsernameRequest.newUsername()));
     }
 }

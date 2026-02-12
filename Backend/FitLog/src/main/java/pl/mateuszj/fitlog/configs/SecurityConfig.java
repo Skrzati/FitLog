@@ -26,9 +26,9 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(
                         authorizationManagerRequestMatcherRegistry ->  authorizationManagerRequestMatcherRegistry
-                                .requestMatchers("/Login").permitAll()
-                                .requestMatchers("/Register").permitAll()
-                                .requestMatchers("/User/**").permitAll()
+                                .requestMatchers("/login").permitAll()
+                                .requestMatchers("/register").permitAll()
+                                .requestMatchers("/user/**").permitAll()
                                 .requestMatchers("/Workout/**").permitAll()
                                 .requestMatchers("/Workouts/**").permitAll()
                                 .anyRequest().authenticated()

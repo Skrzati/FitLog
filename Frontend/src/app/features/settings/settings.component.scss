@@ -132,7 +132,12 @@ form {
     }
   }
 }
-
+.hint {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-top: -4px; /* Lekkie przysunięcie do inputa */
+  margin-left: 2px;
+}
 /* CUSTOM SWITCH (Przełącznik) */
 .switch {
   position: relative;
