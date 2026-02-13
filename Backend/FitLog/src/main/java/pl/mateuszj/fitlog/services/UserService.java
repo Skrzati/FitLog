@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import pl.mateuszj.fitlog.models.Role;
 import pl.mateuszj.fitlog.models.User;
 import pl.mateuszj.fitlog.models.dto.userDto.FirstnameRequest;
+import pl.mateuszj.fitlog.models.dto.userDto.LoginRequest;
 import pl.mateuszj.fitlog.models.dto.userDto.RegisterRequest;
 import pl.mateuszj.fitlog.models.dto.userDto.UsernameRequest;
 import pl.mateuszj.fitlog.repository.UserRepository;
@@ -19,6 +20,15 @@ public class UserService {
     public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+    }
+
+    public User getUserByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Użytkownik nie istnieje"));
+    }
+    public User getUserByUsername(String username) {
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("Użytkownik nie istnieje"));
     }
 
     public User registration(RegisterRequest registerRequest) {
@@ -39,15 +49,7 @@ public class UserService {
             return userRepository.save(user);
         }
     }
-    public User getUserByEmail(String email) {
-        return userRepository.findByEmail(email)
-        .orElseThrow(() -> new RuntimeException("Użytkownik nie istnieje"));
-    }
-    public User getUserByUsername(String username) {
-        return userRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("Użytkownik nie istnieje"));
-    }
-    public User userData(User user) {
+    public User login(User user) {
         if (userRepository.findByEmail(user.getEmail()).isPresent()) {
             User data = userRepository.findByEmail(user.getEmail()).get();
             if (passwordEncoder.matches(user.getPassword(), data.getPassword())) {

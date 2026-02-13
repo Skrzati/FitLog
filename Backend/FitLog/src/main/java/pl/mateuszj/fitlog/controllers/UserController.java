@@ -25,7 +25,7 @@ public class UserController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody User user) {
-        User loginAccept = userService.userData(user);
+        User loginAccept = userService.login(user);
         if (loginAccept != null) {
             return ResponseEntity.ok(loginAccept);
         }
