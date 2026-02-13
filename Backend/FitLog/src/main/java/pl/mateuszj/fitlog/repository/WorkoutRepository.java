@@ -1,7 +1,7 @@
 package pl.mateuszj.fitlog.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import pl.mateuszj.fitlog.models.Workouts;
+import pl.mateuszj.fitlog.models.workout.Workouts;
 
 import java.util.List;
 

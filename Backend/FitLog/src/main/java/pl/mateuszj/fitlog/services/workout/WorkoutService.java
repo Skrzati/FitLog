@@ -1,10 +1,11 @@
-package pl.mateuszj.fitlog.services;
+package pl.mateuszj.fitlog.services.workout;
 
 import org.springframework.stereotype.Service;
-import pl.mateuszj.fitlog.models.Cardio;
-import pl.mateuszj.fitlog.models.Gym;
-import pl.mateuszj.fitlog.models.User;
-import pl.mateuszj.fitlog.models.Workouts;
+import pl.mateuszj.fitlog.models.dto.workoutDto.SaveRunnerRequest;
+import pl.mateuszj.fitlog.models.workout.Cardio;
+import pl.mateuszj.fitlog.models.workout.Gym;
+import pl.mateuszj.fitlog.models.user.User;
+import pl.mateuszj.fitlog.models.workout.Workouts;
 import pl.mateuszj.fitlog.models.dto.workoutDto.WorkoutDto;
 import pl.mateuszj.fitlog.repository.UserRepository;
 import pl.mateuszj.fitlog.repository.WorkoutRepository;
@@ -28,6 +29,27 @@ public class WorkoutService {
     public Workouts findWorkouts(Long workoutId) {
         return workoutRepository.findById(workoutId).orElse(null);
     }
+
+    public Workouts saveRuning(long id , SaveRunnerRequest run){
+        if(userRepository.findById(id).isPresent()){
+            User user = userRepository.findById(id).get();
+            Cardio cardio = new Cardio();
+            cardio.setUser(user);
+            cardio.setCalories(run.calories());
+            cardio.setDate(run.date());
+            cardio.setDuration(run.duration());
+            cardio.setCadence(run.cadence());
+            cardio.setDistance(run.distance());
+            cardio.setHeartRate(run.heartRate());
+            cardio.setPace(run.pace());
+            cardio.setStride(run.stride());
+            return workoutRepository.save(cardio);
+        }
+        else {
+            throw new RuntimeException("Nie znaleziono użytkownika");
+        }
+    }
+
     public Workouts saveWorkouts(String username,Workouts workouts) {
         User user = userRepository.findByUsername(username).orElseThrow();
             workouts.setUser(user);

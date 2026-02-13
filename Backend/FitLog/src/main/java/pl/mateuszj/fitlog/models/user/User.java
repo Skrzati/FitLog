@@ -1,9 +1,9 @@
-package pl.mateuszj.fitlog.models;
+package pl.mateuszj.fitlog.models.user;
 
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
+import pl.mateuszj.fitlog.models.workout.Workouts;
 
 @Entity
 @Table(name = "Users")
@@ -19,8 +19,9 @@ public class User{
     private String username;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn
+    @JoinColumn(name = "workout_id")
     private Workouts workouts;
+
 
     public void setWorkouts(Workouts workouts) {
         this.workouts = workouts;

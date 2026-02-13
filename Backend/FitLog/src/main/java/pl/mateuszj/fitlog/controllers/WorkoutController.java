@@ -2,10 +2,11 @@ package pl.mateuszj.fitlog.controllers;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pl.mateuszj.fitlog.models.Workouts;
+import pl.mateuszj.fitlog.models.dto.workoutDto.SaveRunnerRequest;
+import pl.mateuszj.fitlog.models.workout.Workouts;
 import pl.mateuszj.fitlog.models.dto.workoutDto.WorkoutDto;
-import pl.mateuszj.fitlog.services.UserService;
-import pl.mateuszj.fitlog.services.WorkoutService;
+import pl.mateuszj.fitlog.services.user.UserService;
+import pl.mateuszj.fitlog.services.workout.WorkoutService;
 
 import java.util.List;
 
@@ -22,9 +23,13 @@ public class WorkoutController {
     }
 
     @PostMapping("/user/{username}")
-    public ResponseEntity<?> save(@PathVariable String username, @RequestBody Workouts workouts) {
+    public ResponseEntity<?> saveWorkout(@PathVariable String username, @RequestBody Workouts workouts) {
         
         return ResponseEntity.ok(workoutService.saveWorkouts(username,workouts));
+    }
+    @PostMapping("/user/run/{id}")
+    public ResponseEntity<?> saveRunning(@PathVariable long id, @RequestBody SaveRunnerRequest run) {
+        return ResponseEntity.ok(workoutService.saveRuning(id, run));
     }
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<Workouts>> getUserWorkouts(@PathVariable Long userId) {

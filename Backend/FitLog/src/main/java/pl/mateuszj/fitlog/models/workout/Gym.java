@@ -1,4 +1,4 @@
-package pl.mateuszj.fitlog.models;
+package pl.mateuszj.fitlog.models.workout;
 
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;

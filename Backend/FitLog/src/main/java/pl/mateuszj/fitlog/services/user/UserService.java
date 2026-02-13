@@ -1,12 +1,11 @@
-package pl.mateuszj.fitlog.services;
+package pl.mateuszj.fitlog.services.user;
 
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import pl.mateuszj.fitlog.models.Role;
-import pl.mateuszj.fitlog.models.User;
+import pl.mateuszj.fitlog.models.user.Role;
+import pl.mateuszj.fitlog.models.user.User;
 import pl.mateuszj.fitlog.models.dto.userDto.FirstnameRequest;
-import pl.mateuszj.fitlog.models.dto.userDto.LoginRequest;
 import pl.mateuszj.fitlog.models.dto.userDto.RegisterRequest;
 import pl.mateuszj.fitlog.models.dto.userDto.UsernameRequest;
 import pl.mateuszj.fitlog.repository.UserRepository;

@@ -1,24 +1,21 @@
-package pl.mateuszj.fitlog.models;
+package pl.mateuszj.fitlog.models.workout;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import jakarta.persistence.*;
-import lombok.Getter; // Jeśli używasz Lomboka, jeśli nie - zostaw gettery/settery
-import lombok.Setter;
+import pl.mateuszj.fitlog.models.user.User;
 
-import java.time.Duration;
 import java.util.Date;
 
 @Entity
 @Table(name = "Workout")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "workout_type", discriminatorType = DiscriminatorType.STRING)
-// --- DODAJ PONIŻSZY BLOK ---
 @JsonTypeInfo(
         use = JsonTypeInfo.Id.NAME,
         include = JsonTypeInfo.As.PROPERTY,
-        property = "type" // To nazwa pola, które zobaczy Angular
+        property = "type"
 )
 @JsonSubTypes({
         @JsonSubTypes.Type(value = Gym.class, name = "Gym"),
@@ -30,20 +27,16 @@ public class Workouts {
     private long id;
 
     private Date date;
-    private Long calories; // Zmieniłem nazwę z Calories na calories (mała litera - konwencja Java)
-
-    // UWAGA: Duration w bazie często sprawia problemy.
-    // Jeśli będziesz miał błędy, zmień to na 'private int duration;' (minuty)
+    private Long calories;
     private int duration;
 
-    // --- ZMIANA TUTAJ ---
-    // Zamiast List<User>, dajemy pojedynczego Usera
-    @ManyToOne
+
+    @ManyToOne (fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    @JsonIgnore // Żeby nie było pętli w JSON
+    @JsonIgnore
     private User user;
 
-    // Gettery i Settery (jeśli nie masz Lomboka)
+
     public long getId() { return id; }
     public void setId(long id) { this.id = id; }
     public Date getDate() { return date; }
