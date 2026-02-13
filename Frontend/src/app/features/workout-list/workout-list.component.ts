@@ -28,7 +28,7 @@ export class WorkoutListComponent implements OnInit {
   selectedType = signal<WorkoutType>('CARDIO');
   currentUser = signal<User | null>(null);
 
-  // --- STATYSTYKI DO NAGŁÓWKA (NOWOŚĆ) ---
+  // Statystyki
   totalWorkouts = computed(() => this.userWorkouts().length);
   totalDuration = computed(() => this.userWorkouts().reduce((acc, w) => acc + w.duration, 0));
   totalKcal = computed(() => this.userWorkouts().reduce((acc, w) => acc + (w.calories || 0), 0));
@@ -37,14 +37,24 @@ export class WorkoutListComponent implements OnInit {
   newWorkout: any = {
     type: 'CARDIO',
     date: new Date().toISOString().split('T')[0],
-    duration: 0, calories: 0,
-    distance: 0, heartRate: 0, pace: 0, cadence: 0, stride: 0,
-    name: '', reps: 0, count: 0, weight: 0
+    duration: 0, 
+    calories: 0,
+    distance: 0, 
+    heartRate: 0, 
+    pace: 0, 
+    cadence: 0, 
+    stride: 0,
+    name: '', 
+    reps: 0, 
+    count: 0, 
+    weight: 0
   };
 
   ngOnInit() {
     const user = this.authService.currentUser();
     this.currentUser.set(user);
+    
+    // Walidacja ID przy starcie
     if (user && user.id) {
       this.fetchWorkouts(user.id);
     }
@@ -58,7 +68,10 @@ export class WorkoutListComponent implements OnInit {
         this.userWorkouts.set(sorted);
         this.isLoading.set(false);
       },
-      error: () => this.isLoading.set(false)
+      error: (err) => {
+        console.error(err);
+        this.isLoading.set(false);
+      }
     });
   }
 
@@ -77,18 +90,27 @@ export class WorkoutListComponent implements OnInit {
     this.editingId.set(workout.id!);
     this.showAddForm.set(true);
     this.setWorkoutType(workout.type);
+    
     this.newWorkout = {
       ...workout,
       date: new Date(workout.date).toISOString().split('T')[0]
     };
-    // Scroll do formularza
+
     const formElement = document.querySelector('.add-workout-form');
     if (formElement) formElement.scrollIntoView({ behavior: 'smooth' });
   }
 
   submitWorkout() {
     const user = this.currentUser();
-    if (!user || !user.username) return;
+    
+    // 1. POPRAWKA: Sprawdzamy czy ID istnieje. Jeśli nie, przerywamy.
+    if (!user || !user.id) {
+        alert("Błąd: Nie znaleziono ID użytkownika. Zaloguj się ponownie.");
+        return;
+    }
+
+    // 2. POPRAWKA: Tworzymy stałą, dzięki czemu TypeScript wie, że to na pewno 'number'
+    const userId = user.id;
 
     this.newWorkout.type = this.selectedType();
 
@@ -100,16 +122,28 @@ export class WorkoutListComponent implements OnInit {
           this.showAddForm.set(false);
           this.resetForm();
         },
-        error: () => alert('Błąd edycji')
+        error: (err) => {
+            console.error(err);
+            alert('Błąd edycji');
+        }
       });
     } else {
-      this.workoutService.addWorkout(user.username, this.newWorkout).subscribe({
+      // 3. POPRAWKA: Przekazujemy 'userId' (number) zamiast 'user.username'
+      this.workoutService.addWorkout(userId, this.newWorkout).subscribe({
         next: (createdWorkout) => {
-          this.userWorkouts.update(list => [createdWorkout, ...list]);
+          if(createdWorkout) {
+             this.userWorkouts.update(list => [createdWorkout, ...list]);
+          } else {
+             // 4. POPRAWKA: Przekazujemy pewne 'userId' zamiast potencjalnie pustego 'user.id'
+             this.fetchWorkouts(userId);
+          }
           this.showAddForm.set(false);
           this.resetForm();
         },
-        error: () => alert('Błąd zapisu')
+        error: (err) => {
+            console.error(err);
+            alert('Błąd zapisu');
+        }
       });
     }
   }

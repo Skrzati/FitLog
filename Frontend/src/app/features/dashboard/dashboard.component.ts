@@ -1,5 +1,5 @@
 import { Component, OnInit, inject, signal, computed } from '@angular/core';
-import { CommonModule, DatePipe } from '@angular/common'; // Dodaj DatePipe
+import { CommonModule } from '@angular/common'; 
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 import { User } from '../../core/models/auth.model';
@@ -10,7 +10,7 @@ import { Workout } from '../../core/models/workout.model';
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, RouterLink], // DatePipe jest w CommonModule
+  imports: [CommonModule, RouterLink], 
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss'
 })
@@ -23,41 +23,38 @@ export class DashboardComponent implements OnInit {
   userProfile = signal<User | null>(null);
   userWorkouts = signal<Workout[]>([]);
 
-  // 1. Suma Kalorii (Twoje istniejące computed)
+  // 1. Suma Kalorii
   totalCalories = computed(() => {
     return this.userWorkouts().reduce((acc, curr) => acc + (curr.calories || 0), 0);
   });
 
-  // 2. NOWOŚĆ: Dane do wykresu (Ostatnie 7 dni)
+  // 2. Dane do wykresu (Ostatnie 7 dni)
   weeklyChartData = computed(() => {
     const workouts = this.userWorkouts();
     const days = [];
     const today = new Date();
     
-    // Generujemy ostatnie 7 dni (od dzisiaj wstecz)
     for (let i = 6; i >= 0; i--) {
       const d = new Date();
       d.setDate(today.getDate() - i);
-      const dateStr = d.toISOString().split('T')[0]; // format YYYY-MM-DD
+      const dateStr = d.toISOString().split('T')[0];
       
-      // Sumujemy kalorie dla tego dnia
       const dailyKcal = workouts
-        .filter(w => w.date.startsWith(dateStr))
+        .filter(w => w.date.toString().startsWith(dateStr)) // .toString() dla bezpieczeństwa
         .reduce((sum, w) => sum + (w.calories || 0), 0);
 
       days.push({
-        dayName: d.toLocaleDateString('pl-PL', { weekday: 'short' }), // np. "pon."
+        dayName: d.toLocaleDateString('pl-PL', { weekday: 'short' }),
         value: dailyKcal,
         date: dateStr
       });
     }
 
-    // Znajdź maksymalną wartość, żeby wyskalować słupki (na 100% wysokości)
-    const maxVal = Math.max(...days.map(d => d.value), 1); // min 1 żeby nie dzielić przez 0
+    const maxVal = Math.max(...days.map(d => d.value), 1); 
 
     return days.map(d => ({
       ...d,
-      heightPercent: Math.round((d.value / maxVal) * 100) // np. 80%
+      heightPercent: Math.round((d.value / maxVal) * 100)
     }));
   });
 
@@ -65,12 +62,14 @@ export class DashboardComponent implements OnInit {
     const user = this.authService.currentUser();
     this.userProfile.set(user);
 
+    // Zmiana: pobieramy po ID
     if (user && user.id) {
       this.workoutService.getWorkoutsForUser(user.id).subscribe({
         next: (data) => {
           const sorted = data.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
           this.userWorkouts.set(sorted);
-        }
+        },
+        error: (err) => console.error("Błąd pobierania danych do dashboardu", err)
       });
     }
   }

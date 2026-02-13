@@ -1,6 +1,7 @@
 package pl.mateuszj.fitlog.services.workout;
 
 import org.springframework.stereotype.Service;
+import pl.mateuszj.fitlog.models.dto.workoutDto.SaveGymWorkout;
 import pl.mateuszj.fitlog.models.dto.workoutDto.SaveRunnerRequest;
 import pl.mateuszj.fitlog.models.workout.Cardio;
 import pl.mateuszj.fitlog.models.workout.Gym;
@@ -50,11 +51,23 @@ public class WorkoutService {
         }
     }
 
-    public Workouts saveWorkouts(String username,Workouts workouts) {
-        User user = userRepository.findByUsername(username).orElseThrow();
-            workouts.setUser(user);
-            System.out.println("Workouts saved");
-        return workoutRepository.save(workouts);
+    public Workouts saveGymWorkout(long id , SaveGymWorkout saveGymWorkout) {
+        if(userRepository.findById(id).isPresent()){
+            User user = userRepository.findById(id).get();
+            Gym gym = new Gym();
+            gym.setUser(user);
+            gym.setCalories(saveGymWorkout.calories());
+            gym.setDate(saveGymWorkout.date());
+            gym.setDuration(saveGymWorkout.duration());
+            gym.setName(saveGymWorkout.name());
+            gym.setCount(saveGymWorkout.count());
+            gym.setReps(saveGymWorkout.reps());
+            gym.setWeight(saveGymWorkout.weight());
+            return workoutRepository.save(gym);
+        }
+        else {
+            throw new RuntimeException("Nie znaleziono użytkownika");
+        }
     }
     public List<Workouts> getWorkoutsByUserId(long id) {
         User user = userRepository.findById(id)
