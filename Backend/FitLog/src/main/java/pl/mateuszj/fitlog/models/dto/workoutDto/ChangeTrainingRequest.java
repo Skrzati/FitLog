@@ -1,19 +1,18 @@
 package pl.mateuszj.fitlog.models.dto.workoutDto;
 
+import pl.mateuszj.fitlog.models.workout.Exercise; // Pamiętaj o imporcie!
+
 import java.util.Date;
+import java.util.List; // Pamiętaj o imporcie!
 
-public class WorkoutDto {
-    long id;
-    Date date;
-    String type;
-    long calories;
-    int duration;
+public class ChangeTrainingRequest {
+    private long id;
+    private Date date;
+    private String type;
+    private long calories;
+    private int duration;
 
-
-    private String name;
-    private Double weight;
-    private Integer reps;
-    private Integer count;
+    private List<Exercise> exercises;
 
 
     private Double distance;
@@ -21,6 +20,9 @@ public class WorkoutDto {
     private Double pace;
     private Integer cadence;
     private Integer stride;
+
+
+
 
     public String getType() {
         return type;
@@ -62,36 +64,13 @@ public class WorkoutDto {
         this.duration = duration;
     }
 
-    public String getName() {
-        return name;
+    // Nowe gettery i settery dla listy ćwiczeń
+    public List<Exercise> getExercises() {
+        return exercises;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Double getWeight() {
-        return weight;
-    }
-
-    public void setWeight(Double weight) {
-        this.weight = weight;
-    }
-
-    public Integer getReps() {
-        return reps;
-    }
-
-    public void setReps(Integer reps) {
-        this.reps = reps;
-    }
-
-    public Integer getCount() {
-        return count;
-    }
-
-    public void setCount(Integer count) {
-        this.count = count;
+    public void setExercises(List<Exercise> exercises) {
+        this.exercises = exercises;
     }
 
     public Double getDistance() {

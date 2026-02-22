@@ -1,163 +1,181 @@
 <div class="workout-page-container">
-  
-  <header class="page-header">
+
+  <div class="page-header">
     <div class="header-text">
       <h2>Twoje Treningi</h2>
-      <p>Przeglądaj historię i dodawaj nowe aktywności.</p>
+      <p>Śledź postępy i bij rekordy</p>
     </div>
     <button class="btn-main-add" (click)="toggleForm()">
-      {{ showAddForm() ? 'Zamknij' : '+ Nowy Trening' }}
+      {{ showAddForm() ? 'Zamknij' : '+ Dodaj Trening' }}
     </button>
-  </header>
+  </div>
 
   <div class="quick-stats">
     <div class="stat-card">
-      <span class="label">Razem Treningów</span>
+      <span class="label">Treningi</span>
       <span class="value">{{ totalWorkouts() }}</span>
     </div>
     <div class="stat-card">
       <span class="label">Czas (min)</span>
-      <span class="value">{{ totalDuration() }}</span>
+      <span class="value highlight">{{ totalDuration() }}</span>
     </div>
-    <div class="stat-card highlight">
-      <span class="label">Spalone Kcal</span>
+    <div class="stat-card">
+      <span class="label">Kcal</span>
       <span class="value">{{ totalKcal() }}</span>
     </div>
   </div>
 
-  @if (showAddForm()) {
-    <div class="add-workout-form fade-in">
-      <div class="form-header">
-        <h3>{{ isEditing() ? 'Edytuj Trening' : 'Dodaj Nowy Trening' }}</h3>
-        <p>Wypełnij szczegóły swojej aktywności</p>
+  <div *ngIf="showAddForm()" class="add-workout-form fade-in">
+    <div class="form-header">
+      <h3>{{ isEditing() ? 'Edytuj Trening' : 'Dodaj Nowy Trening' }}</h3>
+      <p>Wypełnij szczegóły swojej aktywności</p>
+    </div>
+
+    <div class="type-selector">
+      <button 
+        [class.active]="selectedType() === 'CARDIO'" 
+        (click)="setWorkoutType('CARDIO')">
+        🏃 Cardio
+      </button>
+      <button 
+        [class.active]="selectedType() === 'Gym'" 
+        (click)="setWorkoutType('Gym')">
+        🏋️ Siłownia
+      </button>
+    </div>
+
+    <div class="form-grid">
+      <div class="form-group">
+        <label>Data</label>
+        <input type="date" [(ngModel)]="newWorkout.date">
+      </div>
+      <div class="form-group">
+        <label>Czas (min)</label>
+        <input type="number" [(ngModel)]="newWorkout.duration">
+      </div>
+      <div class="form-group">
+        <label>Spalone Kcal</label>
+        <input type="number" [(ngModel)]="newWorkout.calories">
+      </div>
+    </div>
+
+    <div *ngIf="selectedType() === 'CARDIO'">
+      <div class="form-section-label">Szczegóły Biegu</div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Dystans (km)</label>
+          <input type="number" step="0.01" [(ngModel)]="newWorkout.distance">
+        </div>
+        <div class="form-group">
+          <label>Śr. Tętno</label>
+          <input type="number" [(ngModel)]="newWorkout.heartRate">
+        </div>
+        <div class="form-group">
+          <label>Tempo (min/km)</label>
+          <input type="number" step="0.1" [(ngModel)]="newWorkout.pace">
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="selectedType() === 'Gym'" class="gym-section">
+      
+      <div *ngIf="newWorkout.exercises.length > 0" class="added-exercises-container">
+        <div class="form-section-label">Lista ćwiczeń ({{ newWorkout.exercises.length }})</div>
+        <div class="added-exercises-list">
+          <div *ngFor="let ex of newWorkout.exercises; let i = index" class="exercise-item">
+            <div class="ex-info">
+              <span class="ex-name">{{ ex.name }}</span>
+              <span class="ex-details">{{ ex.weight }}kg x {{ ex.count }}s x {{ ex.reps }}p</span>
+            </div>
+            <button class="btn-remove-item" (click)="removeExerciseFromList(i)">🗑️</button>
+          </div>
+        </div>
       </div>
 
-      <div class="type-selector">
-        <button type="button" [class.active]="selectedType() === 'CARDIO'" (click)="setWorkoutType('CARDIO')">
-           🏃‍♂️ Cardio
-        </button>
-        <button type="button" [class.active]="selectedType() === 'Gym'" (click)="setWorkoutType('Gym')">
-           🏋️‍♀️ Siłownia
-        </button>
-      </div>
+      <div class="add-exercise-box">
+        <div class="subform-header">Dodaj kolejne ćwiczenie</div>
+        
+        <div class="form-group full-width" style="margin-bottom: 1rem;">
+          <input type="text" placeholder="Nazwa ćwiczenia (np. Wyciskanie)" [(ngModel)]="currentExercise.name">
+        </div>
 
-      <form (ngSubmit)="submitWorkout()">
         <div class="form-grid">
           <div class="form-group">
-             <label>Data</label>
-             <input type="date" [(ngModel)]="newWorkout.date" name="date" required>
+            <input type="number" placeholder="Ciężar (kg)" [(ngModel)]="currentExercise.weight">
           </div>
           <div class="form-group">
-             <label>Czas (min)</label>
-             <input type="number" [(ngModel)]="newWorkout.duration" name="duration" required>
+            <input type="number" placeholder="Serie" [(ngModel)]="currentExercise.count">
           </div>
           <div class="form-group">
-             <label>Kcal</label>
-             <input type="number" [(ngModel)]="newWorkout.calories" name="calories">
+            <input type="number" placeholder="Powt." [(ngModel)]="currentExercise.reps">
           </div>
         </div>
 
-        @if (selectedType() === 'CARDIO') {
-          <div class="form-section-label">Szczegóły biegu/roweru</div>
-          <div class="form-grid">
-            <div class="form-group">
-               <label>Dystans (km)</label>
-               <input type="number" step="0.01" [(ngModel)]="newWorkout.distance" name="distance">
-            </div>
-            <div class="form-group">
-               <label>Śr. Tętno</label>
-               <input type="number" [(ngModel)]="newWorkout.heartRate" name="heartRate">
-            </div>
-            <div class="form-group">
-               <label>Tempo</label>
-               <input type="number" step="0.1" [(ngModel)]="newWorkout.pace" name="pace">
-            </div>
-          </div>
-        }
-
-        @if (selectedType() === 'Gym') {
-          <div class="form-section-label">Szczegóły ćwiczenia</div>
-          <div class="form-group full-width">
-             <label>Nazwa ćwiczenia</label>
-             <input type="text" [(ngModel)]="newWorkout.name" name="name" placeholder="np. Wyciskanie sztangi">
-          </div>
-          <div class="form-grid">
-            <div class="form-group">
-               <label>Ciężar (kg)</label>
-               <input type="number" step="0.5" [(ngModel)]="newWorkout.weight" name="weight">
-            </div>
-            <div class="form-group">
-               <label>Serie</label>
-               <input type="number" [(ngModel)]="newWorkout.count" name="count">
-            </div>
-            <div class="form-group">
-               <label>Powtórzenia</label>
-               <input type="number" [(ngModel)]="newWorkout.reps" name="reps">
-            </div>
-          </div>
-        }
-
-        <div class="form-actions">
-           <button type="button" class="btn-cancel" (click)="toggleForm()">Anuluj</button>
-           <button type="submit" class="btn-submit">
-             {{ isEditing() ? 'Zapisz Zmiany' : 'Dodaj Trening' }}
-           </button>
-        </div>
-      </form>
+        <button type="button" class="btn-add-to-list" (click)="addExerciseToList()">
+          + Dodaj do listy
+        </button>
+      </div>
     </div>
-  }
 
-  <div class="workouts-container">
-    @if (isLoading()) { 
-      <div class="loading-state">Ładowanie Twoich osiągnięć...</div> 
-    } 
-    
-    @else if (userWorkouts().length === 0) {
-      <div class="empty-state fade-in">
-        <div class="empty-icon">🚀</div>
-        <h3>Nic tu jeszcze nie ma!</h3>
-        <p>To idealny moment, aby zacząć. Dodaj swój pierwszy trening i zacznij budować historię.</p>
-        <button class="btn-empty-action" (click)="toggleForm()">Dodaj pierwszy trening</button>
-      </div>
-    } 
-    
-    @else {
-      <div class="workouts-list fade-in">
-        @for (workout of userWorkouts(); track workout.id) {
-          <div class="workout-card">
-            
-            <div class="card-left">
-               <div class="type-indicator" [ngClass]="workout.type === 'CARDIO' ? 'cardio' : 'strength'"></div>
-               <div class="icon-box" [ngClass]="workout.type === 'CARDIO' ? 'cardio' : 'strength'">
-                 {{ workout.type === 'CARDIO' ? '🏃‍♂️' : '🏋️‍♀️' }}
-               </div>
-            </div>
-
-            <div class="card-content">
-               <div class="header">
-                 <span class="date">{{ workout.date | date:'dd.MM.yyyy' }}</span>
-                 <h4>{{ workout.type === 'Gym' ? $any(workout).name || 'Trening Siłowy' : 'Trening Cardio' }}</h4>
-               </div>
-               <div class="stats-row">
-                 <span class="stat-pill">⏱ {{ workout.duration }} min</span>
-                 <span class="stat-pill">🔥 {{ workout.calories }} kcal</span>
-                 
-                 @if (workout.type === 'CARDIO' && $any(workout).distance) {
-                    <span class="stat-pill highlight">📍 {{ $any(workout).distance }} km</span>
-                 }
-                 @if (workout.type === 'Gym') {
-                    <span class="stat-pill highlight">⚖️ {{ $any(workout).weight }} kg</span>
-                 }
-               </div>
-            </div>
-
-            <div class="card-actions">
-               <button class="action-btn edit" (click)="startEdit(workout)" title="Edytuj">✏️</button>
-               <button class="action-btn delete" (click)="deleteWorkoutHandler(workout.id)" title="Usuń">🗑️</button>
-            </div>
-          </div>
-        }
-      </div>
-    }
+    <div class="form-actions">
+      <button class="btn-cancel" (click)="toggleForm()">Anuluj</button>
+      <button class="btn-submit" (click)="submitWorkout()" [disabled]="isLoading()">
+        {{ isLoading() ? 'Zapisywanie...' : 'Zapisz Trening' }}
+      </button>
+    </div>
   </div>
+
+  <div class="workouts-list">
+    
+    <div *ngIf="isLoading() && !showAddForm()" style="text-align: center; color: var(--text-muted);">
+      Ładowanie...
+    </div>
+
+    <div *ngIf="!isLoading() && userWorkouts().length === 0" class="empty-state">
+      <div class="empty-icon">📭</div>
+      <h3>Brak treningów</h3>
+      <p>Dodaj swój pierwszy trening, aby zacząć śledzić postępy!</p>
+    </div>
+
+    <div *ngFor="let workout of userWorkouts()" class="workout-card fade-in">
+      
+      <div class="card-left">
+        <div class="type-indicator" [class.cardio]="workout.type === 'CARDIO'" [class.strength]="workout.type === 'Gym'"></div>
+        <div class="icon-box">
+          {{ workout.type === 'CARDIO' ? '🏃' : '🏋️' }}
+        </div>
+      </div>
+
+      <div class="card-content">
+        <div class="header">
+          <span class="date">{{ workout.date | date:'dd.MM.yyyy' }}</span>
+          <h4>{{ workout.type === 'CARDIO' ? 'Bieganie' : 'Trening Siłowy' }}</h4>
+        </div>
+
+        <div *ngIf="workout.type === 'CARDIO'" class="stats-row">
+          <span class="stat-pill highlight">{{ $any(workout).distance }} km</span>
+          <span class="stat-pill">{{ workout.calories }} kcal</span>
+          <span class="stat-pill">{{ $any(workout).pace }} min/km</span>
+        </div>
+
+        <div *ngIf="workout.type === 'Gym'" class="stats-row">
+          <ng-container *ngIf="$any(workout).exercises?.length > 0">
+             <span *ngFor="let ex of $any(workout).exercises" class="stat-pill">
+               {{ ex.name }} ({{ ex.weight }}kg)
+             </span>
+          </ng-container>
+          <span *ngIf="!$any(workout).exercises && $any(workout).name" class="stat-pill">
+             {{ $any(workout).name }}
+          </span>
+        </div>
+      </div>
+
+      <div class="card-actions">
+        <button class="action-btn edit" (click)="startEdit(workout)">✏️</button>
+        <button class="action-btn delete" (click)="deleteWorkoutHandler(workout.id)">🗑️</button>
+      </div>
+
+    </div>
+  </div>
+
 </div>

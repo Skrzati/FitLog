@@ -1,45 +1,23 @@
 package pl.mateuszj.fitlog.models.workout;
 
-import jakarta.persistence.DiscriminatorValue;
-import jakarta.persistence.Entity;
+import jakarta.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @DiscriminatorValue("Gym")
-public class Gym extends Workouts{
-    private String name;
-    private int reps;
-    private int count;
-    private double weight;
+public class Gym extends Workouts {
 
-    public String getName() {
-        return name;
+    // Tworzy relację jeden-do-wielu w bazie danych (tabela gym_exercises)
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "gym_exercises", joinColumns = @JoinColumn(name = "workout_id"))
+    private List<Exercise> exercises = new ArrayList<>();
+
+    public List<Exercise> getExercises() {
+        return exercises;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public int getReps() {
-        return reps;
-    }
-
-    public void setReps(int reps) {
-        this.reps = reps;
-    }
-
-    public int getCount() {
-        return count;
-    }
-
-    public void setCount(int count) {
-        this.count = count;
-    }
-
-    public double getWeight() {
-        return weight;
-    }
-
-    public void setWeight(double weight) {
-        this.weight = weight;
+    public void setExercises(List<Exercise> exercises) {
+        this.exercises = exercises;
     }
 }

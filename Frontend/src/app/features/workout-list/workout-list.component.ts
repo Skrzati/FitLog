@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../core/services/auth.service';
 import { WorkoutService } from '../../core/services/workout.service';
-import { Workout, WorkoutType } from '../../core/models/workout.model';
+import { Workout, WorkoutType, GymExerciseDetails } from '../../core/models/workout.model';
 import { User } from '../../core/models/auth.model';
 
 @Component({
@@ -20,7 +20,6 @@ export class WorkoutListComponent implements OnInit {
   userWorkouts = signal<Workout[]>([]);
   isLoading = signal<boolean>(false);
   
-  // Stan formularza
   showAddForm = signal<boolean>(false);
   isEditing = signal<boolean>(false);
   editingId = signal<number | null>(null);
@@ -33,28 +32,31 @@ export class WorkoutListComponent implements OnInit {
   totalDuration = computed(() => this.userWorkouts().reduce((acc, w) => acc + w.duration, 0));
   totalKcal = computed(() => this.userWorkouts().reduce((acc, w) => acc + (w.calories || 0), 0));
 
-  // Model formularza
+  // --- MODEL DANYCH ---
+
+  // 1. Obiekt główny (to co wyślemy do backendu)
   newWorkout: any = {
     type: 'CARDIO',
     date: new Date().toISOString().split('T')[0],
     duration: 0, 
     calories: 0,
-    distance: 0, 
-    heartRate: 0, 
-    pace: 0, 
-    cadence: 0, 
-    stride: 0,
-    name: '', 
-    reps: 0, 
-    count: 0, 
+    // Pola Cardio
+    distance: 0, heartRate: 0, pace: 0, cadence: 0, stride: 0,
+    // Pola Gym (Teraz to tablica!)
+    exercises: [] 
+  };
+
+  // 2. Obiekt pomocniczy (to co wpisujesz w inputy przed kliknięciem "Dodaj ćwiczenie")
+  currentExercise: GymExerciseDetails = {
+    name: '',
+    reps: 0,
+    count: 0,
     weight: 0
   };
 
   ngOnInit() {
     const user = this.authService.currentUser();
     this.currentUser.set(user);
-    
-    // Walidacja ID przy starcie
     if (user && user.id) {
       this.fetchWorkouts(user.id);
     }
@@ -75,6 +77,33 @@ export class WorkoutListComponent implements OnInit {
     });
   }
 
+  // --- LOGIKA LISTY ĆWICZEŃ (NOWOŚĆ) ---
+
+  addExerciseToList() {
+    // Walidacja: nazwa musi być wpisana
+    if (!this.currentExercise.name.trim()) {
+      alert('Wpisz nazwę ćwiczenia!');
+      return;
+    }
+
+    // Dodajemy KOPIĘ obiektu do listy (spread operator ...)
+    this.newWorkout.exercises.push({ ...this.currentExercise });
+
+    // Resetujemy inputy ćwiczenia
+    this.currentExercise = {
+      name: '',
+      reps: 0,
+      count: 0,
+      weight: 0
+    };
+  }
+
+  removeExerciseFromList(index: number) {
+    this.newWorkout.exercises.splice(index, 1);
+  }
+
+  // --------------------------------------
+
   toggleForm() {
     if (this.showAddForm()) this.resetForm();
     this.showAddForm.update(val => !val);
@@ -91,9 +120,12 @@ export class WorkoutListComponent implements OnInit {
     this.showAddForm.set(true);
     this.setWorkoutType(workout.type);
     
+    // Kopiujemy dane. Uwaga: Jeśli edytujesz stary trening (sprzed zmian), 
+    // może nie mieć pola 'exercises'. Trzeba to obsłużyć.
     this.newWorkout = {
       ...workout,
-      date: new Date(workout.date).toISOString().split('T')[0]
+      date: new Date(workout.date).toISOString().split('T')[0],
+      exercises: (workout as any).exercises || [] // Zabezpieczenie
     };
 
     const formElement = document.querySelector('.add-workout-form');
@@ -103,15 +135,18 @@ export class WorkoutListComponent implements OnInit {
   submitWorkout() {
     const user = this.currentUser();
     
-    // 1. POPRAWKA: Sprawdzamy czy ID istnieje. Jeśli nie, przerywamy.
     if (!user || !user.id) {
         alert("Błąd: Nie znaleziono ID użytkownika. Zaloguj się ponownie.");
         return;
     }
 
-    // 2. POPRAWKA: Tworzymy stałą, dzięki czemu TypeScript wie, że to na pewno 'number'
-    const userId = user.id;
+    // Walidacja dla siłowni: czy dodano chociaż jedno ćwiczenie?
+    if (this.selectedType() === 'Gym' && this.newWorkout.exercises.length === 0) {
+      alert("Dodaj przynajmniej jedno ćwiczenie do listy!");
+      return;
+    }
 
+    const userId = user.id;
     this.newWorkout.type = this.selectedType();
 
     if (this.isEditing() && this.editingId()) {
@@ -128,13 +163,11 @@ export class WorkoutListComponent implements OnInit {
         }
       });
     } else {
-      // 3. POPRAWKA: Przekazujemy 'userId' (number) zamiast 'user.username'
       this.workoutService.addWorkout(userId, this.newWorkout).subscribe({
         next: (createdWorkout) => {
           if(createdWorkout) {
              this.userWorkouts.update(list => [createdWorkout, ...list]);
           } else {
-             // 4. POPRAWKA: Przekazujemy pewne 'userId' zamiast potencjalnie pustego 'user.id'
              this.fetchWorkouts(userId);
           }
           this.showAddForm.set(false);
@@ -142,7 +175,7 @@ export class WorkoutListComponent implements OnInit {
         },
         error: (err) => {
             console.error(err);
-            alert('Błąd zapisu');
+            alert('Błąd zapisu (Pamiętaj, backend musi obsługiwać listę exercises!)');
         }
       });
     }
@@ -164,12 +197,16 @@ export class WorkoutListComponent implements OnInit {
     this.isEditing.set(false);
     this.editingId.set(null);
     const currentType = this.selectedType();
+    
     this.newWorkout = {
       type: currentType,
       date: new Date().toISOString().split('T')[0],
       duration: 0, calories: 0,
       distance: 0, heartRate: 0, pace: 0, cadence: 0, stride: 0,
-      name: '', reps: 0, count: 0, weight: 0
+      exercises: [] // Reset listy
     };
+    
+    // Reset inputs
+    this.currentExercise = { name: '', reps: 0, count: 0, weight: 0 };
   }
 }

@@ -1,5 +1,13 @@
 export type WorkoutType = 'CARDIO' | 'Gym';
 
+// Nowy interfejs dla pojedynczego ćwiczenia w liście
+export interface GymExerciseDetails {
+  name: string;
+  reps: number;
+  count: number; // serie
+  weight: number;
+}
+
 export interface WorkoutBase {
   id?: number;
   type: WorkoutType;
@@ -19,10 +27,8 @@ export interface CardioWorkout extends WorkoutBase {
 
 export interface GymWorkout extends WorkoutBase {
   type: 'Gym';
-  name: string;   // Nazwa ćwiczenia
-  reps: number;   // Powtórzenia
-  count: number;  // Serie
-  weight: number; // Ciężar
+  // ZMIANA: Zamiast płaskich pól, mamy listę ćwiczeń
+  exercises: GymExerciseDetails[];
 }
 
 export type Workout = CardioWorkout | GymWorkout;

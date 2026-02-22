@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.*;
 import pl.mateuszj.fitlog.models.dto.workoutDto.SaveGymWorkout;
 import pl.mateuszj.fitlog.models.dto.workoutDto.SaveRunnerRequest;
 import pl.mateuszj.fitlog.models.workout.Workouts;
-import pl.mateuszj.fitlog.models.dto.workoutDto.WorkoutDto;
+import pl.mateuszj.fitlog.models.dto.workoutDto.ChangeTrainingRequest;
 import pl.mateuszj.fitlog.services.user.UserService;
 import pl.mateuszj.fitlog.services.workout.WorkoutService;
 
@@ -22,7 +22,7 @@ public class WorkoutController {
         this.workoutService = workoutService;
         this.userService = userService;
     }
-
+    
     @PostMapping("/user/gym/{id}")
     public ResponseEntity<?> saveWorkout(@PathVariable long id , @RequestBody SaveGymWorkout saveGymWorkout) {
         
@@ -37,7 +37,7 @@ public class WorkoutController {
         return ResponseEntity.ok(workoutService.getWorkoutsByUserId(userId));
     }
     @PutMapping("/update/{id}")
-    public ResponseEntity<?> updateWorkout(@PathVariable("id") long workoutId, @RequestBody WorkoutDto workoutsDto) {
+    public ResponseEntity<?> updateWorkout(@PathVariable("id") long workoutId, @RequestBody ChangeTrainingRequest workoutsDto) {
         return ResponseEntity.ok(workoutService.changeTaining(workoutId,workoutsDto));
     }
     @DeleteMapping("/delete/{id}")

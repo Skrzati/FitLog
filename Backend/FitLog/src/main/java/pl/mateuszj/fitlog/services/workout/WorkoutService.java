@@ -7,7 +7,7 @@ import pl.mateuszj.fitlog.models.workout.Cardio;
 import pl.mateuszj.fitlog.models.workout.Gym;
 import pl.mateuszj.fitlog.models.user.User;
 import pl.mateuszj.fitlog.models.workout.Workouts;
-import pl.mateuszj.fitlog.models.dto.workoutDto.WorkoutDto;
+import pl.mateuszj.fitlog.models.dto.workoutDto.ChangeTrainingRequest;
 import pl.mateuszj.fitlog.repository.UserRepository;
 import pl.mateuszj.fitlog.repository.WorkoutRepository;
 
@@ -59,13 +59,10 @@ public class WorkoutService {
             gym.setCalories(saveGymWorkout.calories());
             gym.setDate(saveGymWorkout.date());
             gym.setDuration(saveGymWorkout.duration());
-            gym.setName(saveGymWorkout.name());
-            gym.setCount(saveGymWorkout.count());
-            gym.setReps(saveGymWorkout.reps());
-            gym.setWeight(saveGymWorkout.weight());
+            // Zapisujemy listę ćwiczeń zamiast pojedynczych pól
+            gym.setExercises(saveGymWorkout.exercises());
             return workoutRepository.save(gym);
-        }
-        else {
+        } else {
             throw new RuntimeException("Nie znaleziono użytkownika");
         }
     }
@@ -75,21 +72,21 @@ public class WorkoutService {
 
         return workoutRepository.findByUserId(id);
     }
-    public Workouts changeTaining(long id,WorkoutDto dto) {
+    public Workouts changeTaining(long id, ChangeTrainingRequest dto) {
         Workouts existingWorkouts = workoutRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Nie znaleziono użytkownika"));
-        existingWorkouts.setCalories(dto.getDate().getTime());
+                .orElseThrow(() -> new RuntimeException("Nie znaleziono treningu"));
+
+        existingWorkouts.setDate(dto.getDate());
         existingWorkouts.setDuration(dto.getDuration());
         existingWorkouts.setCalories(dto.getCalories());
+
         if (existingWorkouts instanceof Gym && "Gym".equals(dto.getType())) {
             Gym gym = (Gym) existingWorkouts;
-            gym.setName(dto.getName());
-            gym.setCount(dto.getCount());
-            gym.setWeight(dto.getWeight());
-            gym.setReps(dto.getReps());
+            gym.setExercises(dto.getExercises());
         }
-        if (existingWorkouts instanceof Gym && "Cardio".equals(dto.getType())) {
-            Cardio  cardio = (Cardio) existingWorkouts;
+
+        if (existingWorkouts instanceof Cardio && "Cardio".equalsIgnoreCase(dto.getType())) {
+            Cardio cardio = (Cardio) existingWorkouts;
             cardio.setCadence(dto.getCadence());
             cardio.setDistance(dto.getDistance());
             cardio.setPace(dto.getPace());
@@ -101,7 +98,7 @@ public class WorkoutService {
     }
     public Workouts deleteWorkouts(long id) {
         Workouts existingWorkouts = workoutRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Nie znaleziono użytkownika"));
+            .orElseThrow(() -> new RuntimeException("Nie znaleziono Treningu"));
         if(existingWorkouts instanceof Gym) {
             workoutRepository.delete(existingWorkouts);
             return  existingWorkouts;
