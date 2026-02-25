@@ -38,13 +38,15 @@ public class UserService {
             throw new RuntimeException("Użytkownik o podanym emailu użytkownika już istnieje");
         }
         else {
-            User user = new User();
-            user.setUsername(registerRequest.username());
-            user.setFirstName(registerRequest.firstname());
-            user.setLastName(registerRequest.lastname());
-            user.setEmail(registerRequest.email());
-            user.setRole(Role.USER);
-            user.setPassword(passwordEncoder.encode(registerRequest.password()));
+            User user = User.builder()
+                    .username(registerRequest.username())
+                    .firstName(registerRequest.firstname())
+                    .lastName(registerRequest.lastname())
+                    .email(registerRequest.email())
+                    .role(Role.USER)
+                    .password(passwordEncoder.encode(registerRequest.password()))
+                    .build();
+
             return userRepository.save(user);
         }
     }
