@@ -1,34 +1,22 @@
-export type WorkoutType = 'CARDIO' | 'Gym';
-
-// Nowy interfejs dla pojedynczego ćwiczenia w liście
-export interface GymExerciseDetails {
+export interface Exercise {
   name: string;
+  series: number;
   reps: number;
-  count: number; // serie
   weight: number;
 }
 
-export interface WorkoutBase {
+export interface Workout {
   id?: number;
-  type: WorkoutType;
   date: string;
   duration: number;
   calories: number;
+  type: 'CARDIO' | 'Gym';
+  // Pola Cardio
+  distance?: number;
+  heartRate?: number;
+  pace?: number;
+  cadence?: number;
+  stride?: number;
+  // Pola Gym
+  exercises?: Exercise[];
 }
-
-export interface CardioWorkout extends WorkoutBase {
-  type: 'CARDIO';
-  distance: number;
-  heartRate: number;
-  pace: number;
-  cadence: number;
-  stride: number;
-}
-
-export interface GymWorkout extends WorkoutBase {
-  type: 'Gym';
-  // ZMIANA: Zamiast płaskich pól, mamy listę ćwiczeń
-  exercises: GymExerciseDetails[];
-}
-
-export type Workout = CardioWorkout | GymWorkout;

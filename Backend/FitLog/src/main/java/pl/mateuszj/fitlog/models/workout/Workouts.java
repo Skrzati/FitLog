@@ -28,7 +28,7 @@ public class Workouts {
 
     private Date date;
     private Long calories;
-    private int duration;
+    private Integer duration;
 
 
     @ManyToOne (fetch = FetchType.LAZY)
@@ -37,15 +37,43 @@ public class Workouts {
     private User user;
 
 
-    public long getId() { return id; }
-    public void setId(long id) { this.id = id; }
-    public Date getDate() { return date; }
-    public void setDate(Date date) { this.date = date; }
-    public int getDuration() { return duration; }
-    public void setDuration(int duration) { this.duration = duration; }
-    public Long getCalories() { return calories; }
-    public void setCalories(Long calories) { this.calories = calories; }
+    public long getId() {
+        return id;
+    }
 
-    public User getUser() { return user; }
-    public void setUser(User user) { this.user = user; }
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
+    }
+
+    public Long getCalories() {
+        return calories;
+    }
+
+    public void setCalories(Long calories) {
+        this.calories = calories;
+    }
+
+    public Integer getDuration() {
+        return duration;
+    }
+
+    public void setDuration(Integer duration) {
+        this.duration = duration;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
 }

@@ -97,16 +97,9 @@ public class WorkoutService {
         return workoutRepository.save(existingWorkouts);
     }
     public Workouts deleteWorkouts(long id) {
-        Workouts existingWorkouts = workoutRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Nie znaleziono Treningu"));
-        if(existingWorkouts instanceof Gym) {
-            workoutRepository.delete(existingWorkouts);
-            return  existingWorkouts;
-        }
-        else  if(existingWorkouts instanceof Cardio) {
-            workoutRepository.delete(existingWorkouts);
-            return  existingWorkouts;
-        }
-        return null;
+        Workouts workout = workoutRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Nie znaleziono treningu"));
+        workoutRepository.delete(workout);
+        return workout;
     }
 }

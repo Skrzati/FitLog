@@ -5,50 +5,27 @@ import jakarta.persistence.Entity;
 
 @Entity
 @DiscriminatorValue("CARDIO")
-public class Cardio extends Workouts{
-    private double distance;
-    private int heartRate;
-    private double pace;
-    private int cadence;
-    private int stride;
+public class Cardio extends Workouts {
 
-    public double getDistance() {
-        return distance;
-    }
+    private Double distance;
+    private Integer heartRate;
+    private Double pace;
+    private Integer cadence;
+    private Integer stride;
 
-    public void setDistance(double distance) {
-        this.distance = distance;
-    }
 
-    public int getHeartRate() {
-        return heartRate;
-    }
+    public Double getDistance() { return distance; }
+    public void setDistance(Double distance) { this.distance = distance; }
 
-    public void setHeartRate(int heartRate) {
-        this.heartRate = heartRate;
-    }
+    public Integer getHeartRate() { return heartRate; }
+    public void setHeartRate(Integer heartRate) { this.heartRate = heartRate; }
 
-    public double getPace() {
-        return pace;
-    }
+    public Double getPace() { return pace; }
+    public void setPace(Double pace) { this.pace = pace; }
 
-    public void setPace(double pace) {
-        this.pace = pace;
-    }
+    public Integer getCadence() { return cadence; }
+    public void setCadence(Integer cadence) { this.cadence = cadence; }
 
-    public int getCadence() {
-        return cadence;
-    }
-
-    public void setCadence(int cadence) {
-        this.cadence = cadence;
-    }
-
-    public int getStride() {
-        return stride;
-    }
-
-    public void setStride(int stride) {
-        this.stride = stride;
-    }
+    public Integer getStride() { return stride; }
+    public void setStride(Integer stride) { this.stride = stride; }
 }

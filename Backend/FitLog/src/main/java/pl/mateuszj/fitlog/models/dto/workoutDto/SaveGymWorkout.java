@@ -7,7 +7,7 @@ import java.util.List;
 public record SaveGymWorkout(
         Date date,
         long calories,
-        int duration,
+        Integer duration,
         List<Exercise> exercises
 ) {
 }

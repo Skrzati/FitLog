@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import pl.mateuszj.fitlog.models.workout.Workouts;
 
+import java.util.List;
+
 @Entity
 @Table(name = "Users")
 public class User{
@@ -18,17 +20,17 @@ public class User{
     private String password;
     private String username;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @OneToMany(fetch = FetchType.EAGER)
     @JoinColumn(name = "workout_id")
-    private Workouts workouts;
+    private List<Workouts> workouts;
 
 
-    public void setWorkouts(Workouts workouts) {
-        this.workouts = workouts;
+    public List<Workouts> getWorkouts() {
+        return workouts;
     }
 
-    public Workouts getWorkouts() {
-        return workouts;
+    public void setWorkouts(List<Workouts> workouts) {
+        this.workouts = workouts;
     }
 
     @Enumerated(EnumType.STRING)
@@ -147,7 +149,7 @@ public class User{
             user.setPassword(this.password);
             user.setUsername(this.username);
             user.setRole(this.role);
-            user.setWorkouts(this.workouts);
+            user.setWorkouts((List<Workouts>) this.workouts);
             return user;
         }
     }

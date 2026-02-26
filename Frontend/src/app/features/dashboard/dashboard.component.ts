@@ -29,34 +29,49 @@ export class DashboardComponent implements OnInit {
   });
 
   // 2. Dane do wykresu (Ostatnie 7 dni)
-  weeklyChartData = computed(() => {
-    const workouts = this.userWorkouts();
-    const days = [];
-    const today = new Date();
+weeklyChartData = computed(() => {
+  const workouts = this.userWorkouts();
+  const days = [];
+  const today = new Date();
+  
+  // Czyścimy dzisiejszą datę z godzin, by porównywać same dni
+  today.setHours(0, 0, 0, 0);
+
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date(today);
+    d.setDate(today.getDate() - i);
     
-    for (let i = 6; i >= 0; i--) {
-      const d = new Date();
-      d.setDate(today.getDate() - i);
-      const dateStr = d.toISOString().split('T')[0];
-      
-      const dailyKcal = workouts
-        .filter(w => w.date.toString().startsWith(dateStr)) // .toString() dla bezpieczeństwa
-        .reduce((sum, w) => sum + (w.calories || 0), 0);
+    // Tworzymy format YYYY-MM-DD niezależny od strefy czasowej (lokalny)
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    const localDateStr = `${year}-${month}-${day}`;
+    
+    const dailyKcal = workouts
+      .filter(w => {
+        // Konwertujemy datę treningu na format lokalny YYYY-MM-DD
+        const wDate = new Date(w.date);
+        const wYear = wDate.getFullYear();
+        const wMonth = String(wDate.getMonth() + 1).padStart(2, '0');
+        const wDay = String(wDate.getDate()).padStart(2, '0');
+        return `${wYear}-${wMonth}-${wDay}` === localDateStr;
+      })
+      .reduce((sum, w) => sum + (w.calories || 0), 0);
 
-      days.push({
-        dayName: d.toLocaleDateString('pl-PL', { weekday: 'short' }),
-        value: dailyKcal,
-        date: dateStr
-      });
-    }
+    days.push({
+      dayName: d.toLocaleDateString('pl-PL', { weekday: 'short' }),
+      value: dailyKcal,
+      date: localDateStr
+    });
+  }
 
-    const maxVal = Math.max(...days.map(d => d.value), 1); 
+  const maxVal = Math.max(...days.map(d => d.value), 1); 
 
-    return days.map(d => ({
-      ...d,
-      heightPercent: Math.round((d.value / maxVal) * 100)
-    }));
-  });
+  return days.map(d => ({
+    ...d,
+    heightPercent: Math.round((d.value / maxVal) * 100)
+  }));
+});
 
   ngOnInit() {
     const user = this.authService.currentUser();
