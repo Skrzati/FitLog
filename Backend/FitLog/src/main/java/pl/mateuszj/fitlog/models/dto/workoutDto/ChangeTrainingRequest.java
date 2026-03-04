@@ -6,11 +6,11 @@ import java.util.Date;
 import java.util.List; // Pamiętaj o imporcie!
 
 public class ChangeTrainingRequest {
-    private long id;
+    private Long id;
     private Date date;
     private String type;
-    private long calories;
-    private int duration;
+    private Long calories;
+    private Integer duration;
 
     private List<Exercise> exercises;
 
@@ -48,19 +48,19 @@ public class ChangeTrainingRequest {
         this.date = date;
     }
 
-    public long getCalories() {
+    public Long getCalories() {
         return calories;
     }
 
-    public void setCalories(long calories) {
+    public void setCalories(Long calories) {
         this.calories = calories;
     }
 
-    public int getDuration() {
+    public Integer getDuration() {
         return duration;
     }
 
-    public void setDuration(int duration) {
+    public void setDuration(Integer duration) {
         this.duration = duration;
     }
 

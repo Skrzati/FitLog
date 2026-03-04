@@ -24,7 +24,7 @@ import java.util.Date;
 public class Workouts {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     private Date date;
     private Long calories;
@@ -37,11 +37,11 @@ public class Workouts {
     private User user;
 
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

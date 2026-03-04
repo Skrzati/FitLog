@@ -11,6 +11,7 @@ import pl.mateuszj.fitlog.models.dto.userDto.UsernameRequest;
 import pl.mateuszj.fitlog.repository.UserRepository;
 
 
+
 @Service
 public class UserService {
 
@@ -73,7 +74,7 @@ public class UserService {
             throw new RuntimeException();
         }
     }
-    public User changePassword(long id,String oldPassword, String newPassword ) {
+    public User changePassword(Long id,String oldPassword, String newPassword ) {
         if (userRepository.findById(id).isPresent()) {
             User data = userRepository.findById(id).get();
             if(passwordEncoder.matches(oldPassword, data.getPassword())) {

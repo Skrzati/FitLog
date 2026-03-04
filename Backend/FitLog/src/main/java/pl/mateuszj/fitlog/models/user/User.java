@@ -3,16 +3,22 @@ package pl.mateuszj.fitlog.models.user;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
 import pl.mateuszj.fitlog.models.workout.Workouts;
 
 import java.util.List;
 
 @Entity
+@Builder
 @Table(name = "Users")
+@NoArgsConstructor
+@AllArgsConstructor
 public class User{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
     private String firstName;
     private String lastName;
     @Email
@@ -44,11 +50,11 @@ public class User{
         this.role = role;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -92,65 +98,4 @@ public class User{
         this.username = username;
     }
 
-    // Builder Pattern
-    public static Builder builder() {
-        return new Builder();
-    }
-
-    public static class Builder {
-        private String firstName;
-        private String lastName;
-        private String email;
-        private String password;
-        private String username;
-        private Role role;
-        private Workouts workouts;
-
-        public Builder firstName(String firstName) {
-            this.firstName = firstName;
-            return this;
-        }
-
-        public Builder lastName(String lastName) {
-            this.lastName = lastName;
-            return this;
-        }
-
-        public Builder email(String email) {
-            this.email = email;
-            return this;
-        }
-
-        public Builder password(String password) {
-            this.password = password;
-            return this;
-        }
-
-        public Builder username(String username) {
-            this.username = username;
-            return this;
-        }
-
-        public Builder role(Role role) {
-            this.role = role;
-            return this;
-        }
-
-        public Builder workouts(Workouts workouts) {
-            this.workouts = workouts;
-            return this;
-        }
-
-        public User build() {
-            User user = new User();
-            user.setFirstName(this.firstName);
-            user.setLastName(this.lastName);
-            user.setEmail(this.email);
-            user.setPassword(this.password);
-            user.setUsername(this.username);
-            user.setRole(this.role);
-            user.setWorkouts((List<Workouts>) this.workouts);
-            return user;
-        }
-    }
 }

@@ -44,15 +44,15 @@ public class UserController {
     }
 
     @GetMapping("/id/{id}")
-    public ResponseEntity<?> getUserById(@PathVariable long id) {
+    public ResponseEntity<?> getUserById(@PathVariable Long id) {
         return ResponseEntity.ok(userService.getFirstnameDto(id));
     }
     @PutMapping("/password/id/{id}")
-    public ResponseEntity<?> updatePassword(@PathVariable long id,@Valid @RequestBody ChangePasswordRequest changePasswordRequest) {
+    public ResponseEntity<?> updatePassword(@PathVariable Long id,@Valid @RequestBody ChangePasswordRequest changePasswordRequest) {
         return ResponseEntity.ok(userService.changePassword(id, changePasswordRequest.oldPassword(),changePasswordRequest.newPassword()));
     }
     @PutMapping("/username/id/{id}")
-    public ResponseEntity<?> updateUsername(@PathVariable long id, @RequestBody ChangeUsernameRequest changeUsernameRequest) {
+    public ResponseEntity<?> updateUsername(@PathVariable Long id, @RequestBody ChangeUsernameRequest changeUsernameRequest) {
         return ResponseEntity.ok(userService.changeUsername(id, changeUsernameRequest.newUsername()));
     }
 }

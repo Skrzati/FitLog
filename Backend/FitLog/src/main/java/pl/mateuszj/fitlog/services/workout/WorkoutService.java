@@ -59,15 +59,15 @@ public class WorkoutService {
             gym.setCalories(saveGymWorkout.calories());
             gym.setDate(saveGymWorkout.date());
             gym.setDuration(saveGymWorkout.duration());
-            // Zapisujemy listę ćwiczeń zamiast pojedynczych pól
             gym.setExercises(saveGymWorkout.exercises());
             return workoutRepository.save(gym);
         } else {
             throw new RuntimeException("Nie znaleziono użytkownika");
         }
     }
-    public List<Workouts> getWorkoutsByUserId(long id) {
-        User user = userRepository.findById(id)
+    public List<Workouts> getWorkoutsByUserId(Long id) {
+        // Sprawdzenie czy użytkownik istnieje
+        userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Nie znaleziono użytkownika"));
 
         return workoutRepository.findByUserId(id);
@@ -96,7 +96,7 @@ public class WorkoutService {
 
         return workoutRepository.save(existingWorkouts);
     }
-    public Workouts deleteWorkouts(long id) {
+    public Workouts deleteWorkouts(Long id) {
         Workouts workout = workoutRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Nie znaleziono treningu"));
         workoutRepository.delete(workout);

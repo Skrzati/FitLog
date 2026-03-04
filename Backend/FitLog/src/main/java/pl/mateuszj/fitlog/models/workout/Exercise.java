@@ -5,17 +5,17 @@ import jakarta.persistence.Embeddable;
 @Embeddable
 public class Exercise {
     private String name;
-    private int reps;
-    private int count; // serie
-    private double weight;
+    private Integer reps;
+    private Integer count; // serie
+    private Double weight;
 
     // Gettery i Settery
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
-    public int getReps() { return reps; }
-    public void setReps(int reps) { this.reps = reps; }
-    public int getCount() { return count; }
-    public void setCount(int count) { this.count = count; }
-    public double getWeight() { return weight; }
-    public void setWeight(double weight) { this.weight = weight; }
+    public Integer getReps() { return reps; }
+    public void setReps(Integer reps) { this.reps = reps; }
+    public Integer getCount() { return count; }
+    public void setCount(Integer count) { this.count = count; }
+    public Double getWeight() { return weight; }
+    public void setWeight(Double weight) { this.weight = weight; }
 }
