@@ -2,7 +2,11 @@ package pl.mateuszj.fitlog.models.user;
 
 
 import jakarta.persistence.*;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
@@ -19,11 +23,17 @@ public class User{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @NotNull
     private String firstName;
+    @NotNull
     private String lastName;
     @Email
+    @NotNull
     private String email;
+    @Min(8)
+    @NotNull
     private String password;
+    @NotNull
     private String username;
 
     @OneToMany(fetch = FetchType.EAGER)

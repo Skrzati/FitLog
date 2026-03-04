@@ -24,12 +24,12 @@ public class WorkoutController {
     }
     
     @PostMapping("/user/gym/{id}")
-    public ResponseEntity<?> saveWorkout(@PathVariable long id , @RequestBody SaveGymWorkout saveGymWorkout) {
-        
+    public ResponseEntity<?> saveWorkout(@PathVariable Long id , @RequestBody SaveGymWorkout saveGymWorkout) {
+
         return ResponseEntity.ok(workoutService.saveGymWorkout(id , saveGymWorkout));
     }
     @PostMapping("/user/run/{id}")
-    public ResponseEntity<?> saveRunning(@PathVariable long id, @RequestBody SaveRunnerRequest run) {
+    public ResponseEntity<?> saveRunning(@PathVariable Long id, @RequestBody SaveRunnerRequest run) {
         return ResponseEntity.ok(workoutService.saveRuning(id, run));
     }
     @GetMapping("/user/{userId}")

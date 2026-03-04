@@ -9,7 +9,6 @@ public class Exercise {
     private Integer count; // serie
     private Double weight;
 
-    // Gettery i Settery
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
     public Integer getReps() { return reps; }

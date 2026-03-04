@@ -72,7 +72,7 @@ public class WorkoutService {
 
         return workoutRepository.findByUserId(id);
     }
-    public Workouts changeTaining(long id, ChangeTrainingRequest dto) {
+    public Workouts changeTaining(Long id, ChangeTrainingRequest dto) {
         Workouts existingWorkouts = workoutRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Nie znaleziono treningu"));
 

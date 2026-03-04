@@ -8,7 +8,6 @@ import java.util.List;
 @DiscriminatorValue("Gym")
 public class Gym extends Workouts {
 
-    // Tworzy relację jeden-do-wielu w bazie danych (tabela gym_exercises)
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "gym_exercises", joinColumns = @JoinColumn(name = "workout_id"))
     private List<Exercise> exercises = new ArrayList<>();

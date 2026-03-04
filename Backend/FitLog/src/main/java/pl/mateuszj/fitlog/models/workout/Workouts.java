@@ -4,6 +4,10 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
 import pl.mateuszj.fitlog.models.user.User;
 
 import java.util.Date;
@@ -12,6 +16,7 @@ import java.util.Date;
 @Table(name = "Workout")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "workout_type", discriminatorType = DiscriminatorType.STRING)
+@Builder
 @JsonTypeInfo(
         use = JsonTypeInfo.Id.NAME,
         include = JsonTypeInfo.As.PROPERTY,
@@ -21,17 +26,21 @@ import java.util.Date;
         @JsonSubTypes.Type(value = Gym.class, name = "Gym"),
         @JsonSubTypes.Type(value = Cardio.class, name = "CARDIO")
 })
+@NoArgsConstructor
+@AllArgsConstructor
 public class Workouts {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private Date date;
+    @NotNull
     private Long calories;
+    @NotNull
     private Integer duration;
 
 
-    @ManyToOne (fetch = FetchType.LAZY)
+    @ManyToOne (fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     @JsonIgnore
     private User user;
