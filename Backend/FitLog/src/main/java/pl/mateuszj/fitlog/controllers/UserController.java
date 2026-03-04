@@ -18,6 +18,7 @@ import pl.mateuszj.fitlog.services.user.UserService;
 public class UserController {
 
     private final UserService userService;
+
     @Autowired
     public UserController(UserService userService) {
         this.userService = userService;
@@ -28,16 +29,17 @@ public class UserController {
         User loginAccept = userService.login(user);
         if (loginAccept != null) {
             return ResponseEntity.ok(loginAccept);
-        }
-        else {
+        } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Błędny login lub hasło");
         }
     }
+
     @PostMapping("/register")
     public ResponseEntity<Void> register(@RequestBody RegisterRequest registerRequest) {
         userService.registration(registerRequest);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
+
     @GetMapping("/username/{username}")
     public ResponseEntity<?> getUserByUsername(@PathVariable String username) {
         return ResponseEntity.ok(userService.getusernameDto(username));
@@ -47,10 +49,12 @@ public class UserController {
     public ResponseEntity<?> getUserById(@PathVariable Long id) {
         return ResponseEntity.ok(userService.getFirstnameDto(id));
     }
+
     @PutMapping("/password/id/{id}")
-    public ResponseEntity<?> updatePassword(@PathVariable Long id,@Valid @RequestBody ChangePasswordRequest changePasswordRequest) {
-        return ResponseEntity.ok(userService.changePassword(id, changePasswordRequest.oldPassword(),changePasswordRequest.newPassword()));
+    public ResponseEntity<?> updatePassword(@PathVariable Long id, @Valid @RequestBody ChangePasswordRequest changePasswordRequest) {
+        return ResponseEntity.ok(userService.changePassword(id, changePasswordRequest.oldPassword(), changePasswordRequest.newPassword()));
     }
+
     @PutMapping("/username/id/{id}")
     public ResponseEntity<?> updateUsername(@PathVariable Long id, @RequestBody ChangeUsernameRequest changeUsernameRequest) {
         return ResponseEntity.ok(userService.changeUsername(id, changeUsernameRequest.newUsername()));

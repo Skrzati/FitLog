@@ -22,8 +22,6 @@ public class ChangeTrainingRequest {
     private Integer stride;
 
 
-
-
     public String getType() {
         return type;
     }

@@ -1,10 +1,17 @@
 package pl.mateuszj.fitlog.models.workout;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
+
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@SuperBuilder
+@NoArgsConstructor
+@AllArgsConstructor
 @DiscriminatorValue("Gym")
 public class Gym extends Workouts {
 

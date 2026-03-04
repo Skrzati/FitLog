@@ -27,51 +27,57 @@ public class WorkoutService {
     public Workouts findUserWorkouts(Long userId) {
         return workoutRepository.findById(userId).orElse(null);
     }
+
     public Workouts findWorkouts(Long workoutId) {
         return workoutRepository.findById(workoutId).orElse(null);
     }
 
-    public Workouts saveRuning(Long id , SaveRunnerRequest run){
-        if(userRepository.findById(id).isPresent()){
+    public Workouts saveRuning(Long id, SaveRunnerRequest run) {
+        if (userRepository.findById(id).isPresent()) {
             User user = userRepository.findById(id).get();
-            Cardio cardio = new Cardio();
-            cardio.setUser(user);
-            cardio.setCalories(run.calories());
-            cardio.setDate(run.date());
-            cardio.setDuration(run.duration());
-            cardio.setCadence(run.cadence());
-            cardio.setDistance(run.distance());
-            cardio.setHeartRate(run.heartRate());
-            cardio.setPace(run.pace());
-            cardio.setStride(run.stride());
+            Cardio cardio = Cardio.builder()
+                    .user(user)
+                    .calories(run.calories())
+                    .date(run.date())
+                    .duration(run.duration())
+                    .cadence(run.cadence())
+                    .distance(run.distance())
+                    .heartRate(run.heartRate())
+                    .pace(run.pace())
+                    .stride(run.stride())
+                    .build();
+
             return workoutRepository.save(cardio);
-        }
-        else {
+        } else {
             throw new RuntimeException("Nie znaleziono użytkownika");
         }
     }
 
-    public Workouts saveGymWorkout(Long id , SaveGymWorkout saveGymWorkout) {
-        if(userRepository.findById(id).isPresent()){
+    public Workouts saveGymWorkout(Long id, SaveGymWorkout saveGymWorkout) {
+        if (userRepository.findById(id).isPresent()) {
             User user = userRepository.findById(id).get();
-            Gym gym = new Gym();
-            gym.setUser(user);
-            gym.setCalories(saveGymWorkout.calories());
-            gym.setDate(saveGymWorkout.date());
-            gym.setDuration(saveGymWorkout.duration());
-            gym.setExercises(saveGymWorkout.exercises());
+
+            Gym gym = Gym.builder()
+                    .user(user)
+                    .calories(saveGymWorkout.calories())
+                    .date(saveGymWorkout.date())
+                    .duration(saveGymWorkout.duration())
+                    .exercises(saveGymWorkout.exercises())
+                    .build();
+
             return workoutRepository.save(gym);
         } else {
             throw new RuntimeException("Nie znaleziono użytkownika");
         }
     }
+
     public List<Workouts> getWorkoutsByUserId(Long id) {
-        // Sprawdzenie czy użytkownik istnieje
         userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Nie znaleziono użytkownika"));
 
         return workoutRepository.findByUserId(id);
     }
+
     public Workouts changeTaining(Long id, ChangeTrainingRequest dto) {
         Workouts existingWorkouts = workoutRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Nie znaleziono treningu"));
@@ -96,6 +102,7 @@ public class WorkoutService {
 
         return workoutRepository.save(existingWorkouts);
     }
+
     public Workouts deleteWorkouts(Long id) {
         Workouts workout = workoutRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Nie znaleziono treningu"));

@@ -22,24 +22,28 @@ public class WorkoutController {
         this.workoutService = workoutService;
         this.userService = userService;
     }
-    
-    @PostMapping("/user/gym/{id}")
-    public ResponseEntity<?> saveWorkout(@PathVariable Long id , @RequestBody SaveGymWorkout saveGymWorkout) {
 
-        return ResponseEntity.ok(workoutService.saveGymWorkout(id , saveGymWorkout));
+    @PostMapping("/user/gym/{id}")
+    public ResponseEntity<?> saveWorkout(@PathVariable Long id, @RequestBody SaveGymWorkout saveGymWorkout) {
+
+        return ResponseEntity.ok(workoutService.saveGymWorkout(id, saveGymWorkout));
     }
+
     @PostMapping("/user/run/{id}")
     public ResponseEntity<?> saveRunning(@PathVariable Long id, @RequestBody SaveRunnerRequest run) {
         return ResponseEntity.ok(workoutService.saveRuning(id, run));
     }
+
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<Workouts>> getUserWorkouts(@PathVariable Long userId) {
         return ResponseEntity.ok(workoutService.getWorkoutsByUserId(userId));
     }
+
     @PutMapping("/update/{id}")
     public ResponseEntity<?> updateWorkout(@PathVariable("id") Long workoutId, @RequestBody ChangeTrainingRequest workoutsDto) {
-        return ResponseEntity.ok(workoutService.changeTaining(workoutId,workoutsDto));
+        return ResponseEntity.ok(workoutService.changeTaining(workoutId, workoutsDto));
     }
+
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> deletaWorkout(@PathVariable("id") Long workoutId) {
         return ResponseEntity.ok(workoutService.deleteWorkouts(workoutId));

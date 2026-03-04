@@ -11,12 +11,12 @@ import pl.mateuszj.fitlog.models.dto.userDto.UsernameRequest;
 import pl.mateuszj.fitlog.repository.UserRepository;
 
 
-
 @Service
 public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+
     public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
@@ -26,6 +26,7 @@ public class UserService {
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("Użytkownik nie istnieje"));
     }
+
     public User getUserByUsername(String username) {
         return userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("Użytkownik nie istnieje"));
@@ -34,11 +35,9 @@ public class UserService {
     public User registration(RegisterRequest registerRequest) {
         if (userRepository.findByUsername(registerRequest.username()).isPresent()) {
             throw new RuntimeException("Użytkownik o podanej nazwie użytkownika już istnieje");
-        }
-        else if(userRepository.findByEmail(registerRequest.email()).isPresent()) {
+        } else if (userRepository.findByEmail(registerRequest.email()).isPresent()) {
             throw new RuntimeException("Użytkownik o podanym emailu użytkownika już istnieje");
-        }
-        else {
+        } else {
             User user = User.builder()
                     .username(registerRequest.username())
                     .firstName(registerRequest.firstname())
@@ -51,55 +50,52 @@ public class UserService {
             return userRepository.save(user);
         }
     }
+
     public User login(User user) {
         if (userRepository.findByEmail(user.getEmail()).isPresent()) {
             User data = userRepository.findByEmail(user.getEmail()).get();
             if (passwordEncoder.matches(user.getPassword(), data.getPassword())) {
                 return data;
-            }
-            else{
+            } else {
                 throw new RuntimeException();
             }
-        }
-        else if (userRepository.findByUsername(user.getUsername()).isPresent()) {
+        } else if (userRepository.findByUsername(user.getUsername()).isPresent()) {
             User data = userRepository.findByUsername(user.getUsername()).get();
             if (passwordEncoder.matches(user.getPassword(), data.getPassword())) {
                 return data;
-            }
-            else {
+            } else {
                 throw new RuntimeException();
             }
-        }
-        else {
+        } else {
             throw new RuntimeException();
         }
     }
-    public User changePassword(Long id,String oldPassword, String newPassword ) {
+
+    public User changePassword(Long id, String oldPassword, String newPassword) {
         if (userRepository.findById(id).isPresent()) {
             User data = userRepository.findById(id).get();
-            if(passwordEncoder.matches(oldPassword, data.getPassword())) {
+            if (passwordEncoder.matches(oldPassword, data.getPassword())) {
                 data.setPassword(passwordEncoder.encode(newPassword));
                 return userRepository.save(data);
-            }
-            else {
+            } else {
                 throw new RuntimeException("Niepoprawne hasło");
             }
-        }
-        else {
+        } else {
             throw new RuntimeException("Nie znaleziono użytkownika");
         }
     }
-    public User changeUsername(Long id,String newUsername) {
+
+    public User changeUsername(Long id, String newUsername) {
         if (userRepository.findById(id).isPresent()) {
             User data = userRepository.findById(id).get();
             data.setUsername(newUsername);
             System.out.println(newUsername);
             return userRepository.save(data);
-        }
-        else {
+        } else {
             throw new RuntimeException("Nie znaleziono użytkownika");
         }
     }
+
     public UsernameRequest getusernameDto(String username) {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("Nie znaleziono użytkownika"));
@@ -108,6 +104,7 @@ public class UserService {
                 user.getUsername()
         );
     }
+
     public FirstnameRequest getFirstnameDto(Long id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Nie znaleziono użytkownika"));
