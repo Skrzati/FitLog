@@ -31,7 +31,7 @@ public class WorkoutService {
         return workoutRepository.findById(workoutId).orElse(null);
     }
 
-    public Workouts saveRuning(long id , SaveRunnerRequest run){
+    public Workouts saveRuning(Long id , SaveRunnerRequest run){
         if(userRepository.findById(id).isPresent()){
             User user = userRepository.findById(id).get();
             Cardio cardio = new Cardio();
@@ -51,7 +51,7 @@ public class WorkoutService {
         }
     }
 
-    public Workouts saveGymWorkout(long id , SaveGymWorkout saveGymWorkout) {
+    public Workouts saveGymWorkout(Long id , SaveGymWorkout saveGymWorkout) {
         if(userRepository.findById(id).isPresent()){
             User user = userRepository.findById(id).get();
             Gym gym = new Gym();

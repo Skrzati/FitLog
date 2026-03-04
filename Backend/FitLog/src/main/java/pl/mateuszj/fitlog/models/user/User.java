@@ -2,11 +2,7 @@ package pl.mateuszj.fitlog.models.user;
 
 
 import jakarta.persistence.*;
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
@@ -23,17 +19,25 @@ public class User{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @NotNull
+
+    @NotBlank(message = "Imię nie może być puste")
+    @Size(min = 2, max = 50, message = "Imię musi mieć od 2 do 50 znaków")
     private String firstName;
-    @NotNull
+
+    @NotBlank(message = "Nazwisko nie może być puste")
+    @Size(min = 2, max = 50, message = "Nazwisko musi mieć od 2 do 50 znaków")
     private String lastName;
-    @Email
-    @NotNull
+
+    @Email(message = "Nieprawidłowy format email")
+    @NotBlank(message = "Email nie może być pusty")
     private String email;
-    @Min(8)
-    @NotNull
+
+    @NotBlank(message = "Hasło nie może być puste")
+    @Size(min = 8, max = 100, message = "Hasło musi mieć minimum 8 znaków")
     private String password;
-    @NotNull
+
+    @NotBlank(message = "Nazwa użytkownika nie może być pusta")
+    @Size(min = 3, max = 30, message = "Nazwa użytkownika musi mieć od 3 do 30 znaków")
     private String username;
 
     @OneToMany(fetch = FetchType.EAGER)
