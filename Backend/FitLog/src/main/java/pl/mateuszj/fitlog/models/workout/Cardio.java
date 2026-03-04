@@ -2,6 +2,7 @@ package pl.mateuszj.fitlog.models.workout;
 
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
+import jakarta.validation.constraints.Max;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -14,6 +15,7 @@ import lombok.experimental.SuperBuilder;
 public class Cardio extends Workouts {
 
     private Double distance;
+    @Max(300)
     private Integer heartRate;
     private Double pace;
     private Integer cadence;

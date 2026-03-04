@@ -79,28 +79,41 @@ public class WorkoutService {
     }
 
     public Workouts changeTaining(Long id, ChangeTrainingRequest dto) {
-        Workouts existingWorkouts = workoutRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Nie znaleziono treningu"));
+        Workouts existingWorkout = workoutRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Nie znaleziono treningu o ID: " + id));
 
-        existingWorkouts.setDate(dto.getDate());
-        existingWorkouts.setDuration(dto.getDuration());
-        existingWorkouts.setCalories(dto.getCalories());
 
-        if (existingWorkouts instanceof Gym && "Gym".equals(dto.getType())) {
-            Gym gym = (Gym) existingWorkouts;
-            gym.setExercises(dto.getExercises());
+        existingWorkout.setDate(dto.getDate());
+        existingWorkout.setDuration(dto.getDuration());
+        existingWorkout.setCalories(dto.getCalories());
+
+
+        updateSpecificWorkoutFields(existingWorkout, dto);
+
+        return workoutRepository.save(existingWorkout);
+    }
+
+    private void updateSpecificWorkoutFields(Workouts workout, ChangeTrainingRequest dto) {
+
+        switch (workout) {
+            case Gym gym when "Gym".equals(dto.getType()) -> {
+
+                if (dto.getExercises() != null) {
+                    gym.setExercises(dto.getExercises());
+                }
+            }
+            case Cardio cardio when "Cardio".equalsIgnoreCase(dto.getType()) -> {
+                if (dto.getCadence() != null) cardio.setCadence(dto.getCadence());
+                if (dto.getDistance() != null) cardio.setDistance(dto.getDistance());
+                if (dto.getPace() != null) cardio.setPace(dto.getPace());
+                if (dto.getHeartRate() != null) cardio.setHeartRate(dto.getHeartRate());
+                if (dto.getStride() != null) cardio.setStride(dto.getStride());
+            }
+            default -> throw new IllegalArgumentException(
+                "Nieprawidłowy typ treningu: " + dto.getType() +
+                " dla obiektu " + workout.getClass().getSimpleName()
+            );
         }
-
-        if (existingWorkouts instanceof Cardio && "Cardio".equalsIgnoreCase(dto.getType())) {
-            Cardio cardio = (Cardio) existingWorkouts;
-            cardio.setCadence(dto.getCadence());
-            cardio.setDistance(dto.getDistance());
-            cardio.setPace(dto.getPace());
-            cardio.setHeartRate(dto.getHeartRate());
-            cardio.setStride(dto.getStride());
-        }
-
-        return workoutRepository.save(existingWorkouts);
     }
 
     public Workouts deleteWorkouts(Long id) {
