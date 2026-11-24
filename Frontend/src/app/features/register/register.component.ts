@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms'; 
 import { Router, RouterLink } from '@angular/router';
@@ -9,6 +9,7 @@ import { RegisterDto } from '../../core/models/auth.model';
   selector: 'app-register',
   standalone: true,
   imports: [CommonModule, FormsModule, RouterLink],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './register.component.html'
   // USUNIĘTO: styleUrls: ['./register.component.scss']
 })

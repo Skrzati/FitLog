@@ -1,72 +1,79 @@
-### Pliki skompilowane (Java) ###
-*.class
+##################################
+### Globalny .gitignore FitLog ###
+##################################
 
-### Spakowane pliki wykonywalne ###
-# Zazwyczaj nie wrzucamy ich do repo, chyba że to release
-*.jar
-*.war
-*.ear
-*.nar
+### Zmienne środowiskowe / sekrety ###
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.jks
+application-local.properties
+application-local.yml
+
+### Pliki systemowe (Mac/Windows/Linux) ###
+.DS_Store
+Thumbs.db
+Desktop.ini
+*~
+*.swp
 
 ### Logi ###
 *.log
+logs/
 
-### Maven (narzędzie budowania) ###
-target/
-pom.xml.tag
-pom.xml.releaseBackup
-pom.xml.versionsBackup
-pom.xml.next
-release.properties
-dependency-reduced-pom.xml
-
-### Gradle (narzędzie budowania) ###
-.gradle/
-build/
-!gradle/wrapper/gradle-wrapper.jar
-!**/src/main/**/build/
-!**/src/test/**/build/
-
-### IntelliJ IDEA (Środowisko) ###
+### IDE ###
+# IntelliJ IDEA
 .idea/
 *.iws
 *.iml
 *.ipr
 out/
-
-### Eclipse (Środowisko) ###
+# Eclipse
 .classpath
 .project
 .settings/
 bin/
+# VS Code (zostawiamy wspólne ustawienia projektu)
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.history/
 
-### Visual Studio Code ###
-.vscode/
+#############################
+### BACKEND (Java/Gradle) ###
+#############################
 
-### Pliki systemowe (Mac/Windows) ###
-.DS_Store
-Thumbs.db
+*.class
+*.jar
+*.war
+*.ear
+*.nar
+!gradle/wrapper/gradle-wrapper.jar
+.gradle/
+build/
+!**/src/main/**/build/
+!**/src/test/**/build/
+# Lokalna baza H2
+*.mv.db
+*.trace.db
 
-####################################
-### FRONTEND (Angular / Node.js) ###
-####################################
+##################################
+### FRONTEND (Angular/Node.js) ###
+##################################
 
-# Zależności (biblioteki) - TO JEST NAJWAŻNIEJSZE
 node_modules/
-
-# Cache Angular CLI
 .angular/
-
-# Wynik budowania aplikacji (produkcyjny kod JS/HTML)
 dist/
-
-# Pliki tymczasowe i logi błędów NPM/Yarn
-npm-debug.log
-yarn-error.log
-test-report.xml
-
-# Pokrycie kodu testami
+out-tsc/
+tmp/
 coverage/
-
-# Prywatne pliki środowiskowe (jeśli będziesz ich używać)
-.env
+.sass-cache/
+npm-debug.log*
+yarn-error.log*
+test-report.xml
+__screenshots__/

@@ -1,4 +1,4 @@
-import { Component, OnInit, signal, computed } from '@angular/core';
+import { Component, OnInit, signal, computed, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { WorkoutService } from '../../core/services/workout.service';
@@ -10,6 +10,7 @@ import { Workout, Exercise } from '../../core/models/workout.model';
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './workout-list.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './workout-list.component.scss'
 })
 export class WorkoutListComponent implements OnInit {
